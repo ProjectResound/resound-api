@@ -51,7 +51,7 @@ class UploadController < ApplicationController
     # Ensure required paths exist
     FileUtils.mkpath final_file_directory
     # Remove any existing file so that we don't keep appending to an old file.
-    FileUtils.remove final_file_path
+    FileUtils.rm final_file_path, force: true
     # Open final file in append mode
     File.open(final_file_path, "a") do |f|
       file_chunks.each do |file_chunk_path|
