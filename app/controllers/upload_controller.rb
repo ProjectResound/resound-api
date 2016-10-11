@@ -63,8 +63,6 @@ class UploadController < ApplicationController
     FileUtils.rm_rf chunk_file_directory
   end
 
-  ##
-  # /final/resting/place/upload.txt
   def final_file_path
     File.join final_file_directory, params[:flowFilename]
   end
@@ -72,7 +70,7 @@ class UploadController < ApplicationController
   ##
   # /final/resting/place
   def final_file_directory
-    File.join "final"
+    File.join "tmp", "final"
   end
 
   ##
