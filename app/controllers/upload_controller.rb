@@ -8,7 +8,7 @@ class UploadController < ApplicationController
     save_file!
     if last_chunk?
       combine_file!
-      render status: :created, json: { checksum: Digest::SHA256.file(final_file_path).hexdigest }
+      render status: :created, json: { checksum: Digest::MD5.file(final_file_path).hexdigest }
       return
     end
 
