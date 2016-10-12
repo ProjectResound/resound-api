@@ -8,7 +8,10 @@ class UploadController < ApplicationController
     save_file!
     if last_chunk?
       combine_file!
-      render status: :created, json: { checksum: Digest::MD5.file(final_file_path).hexdigest }
+      render status: :created, json: {
+          checksum: Digest::MD5.file(final_file_path).hexdigest,
+          fileSize: File.size(final_file_path)
+      }
       return
     end
 
@@ -30,7 +33,7 @@ class UploadController < ApplicationController
   ##
   # Determine if this is the last chunk based on the chunk number.
   def last_chunk?
-    params[:flowChunkNumber].to_i == params[:flowTotalChunks].to_i
+    file_chunks.size == params[:flowTotalChunks].to_i
   end
 
   ##
