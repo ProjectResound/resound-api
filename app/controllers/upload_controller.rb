@@ -1,5 +1,7 @@
 class UploadController < ApplicationController
-  require 'digest'
+  require 'transcoder'
+  
+  FFMPEG_PATH = '/usr/local/bin/ffmpeg'
 
   def index
   end
@@ -8,8 +10,9 @@ class UploadController < ApplicationController
     save_file!
     if last_chunk?
       combine_file!
+      transcode_file!
+      cleanup!
       render status: :created, json: {
-          checksum: Digest::MD5.file(final_file_path).hexdigest,
           fileSize: File.size(final_file_path)
       }
       return
@@ -21,8 +24,6 @@ class UploadController < ApplicationController
 
   private
 
-  ##
-  # Move the temporary Sinatra upload to the chunk file location
   def save_file!
     # Ensure required paths exist
     FileUtils.mkpath chunk_file_directory
@@ -30,26 +31,18 @@ class UploadController < ApplicationController
     FileUtils.mv params['file'].tempfile, chunk_file_path, force: true
   end
 
-  ##
-  # Determine if this is the last chunk based on the chunk number.
   def last_chunk?
     file_chunks.size == params[:flowTotalChunks].to_i
   end
 
-  ##
-  # ./tmp/flow/abc-123/upload.txt.part1
   def chunk_file_path
     File.join(chunk_file_directory, "#{params[:flowFilename]}.part#{params[:flowChunkNumber]}")
   end
 
-  ##
-  # ./tmp/flow/abc-123
   def chunk_file_directory
     File.join "tmp", "flow", params[:flowIdentifier]
   end
 
-  ##
-  # Build final file
   def combine_file!
     # Ensure required paths exist
     FileUtils.mkpath final_file_directory
@@ -62,6 +55,15 @@ class UploadController < ApplicationController
         f.write File.read(file_chunk_path)
       end
     end
+  end
+
+  def transcode_file!
+    transcoder = Transcoder.new()
+    transcoder.binary_path = FFMPEG_PATH
+    transcoder.to_flac(final_file_path, "#{final_file_path}.flac")
+  end
+
+  def cleanup!
     # Cleanup chunk file directory and all chunk files
     FileUtils.rm_rf chunk_file_directory
   end
@@ -70,14 +72,10 @@ class UploadController < ApplicationController
     File.join final_file_directory, params[:flowFilename]
   end
 
-  ##
-  # /final/resting/place
   def final_file_directory
     File.join "tmp", "final"
   end
 
-  ##
-  # Get all file chunks sorted by cardinality of their part number
   def file_chunks
     Dir["#{chunk_file_directory}/*.part*"].sort_by {|f| f.split(".part")[1].to_i }
   end
