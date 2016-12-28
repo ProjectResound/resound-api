@@ -21,7 +21,6 @@ class UploadController < ApplicationController
     render status: :ok
   end
 
-
   private
 
   def save_file!
