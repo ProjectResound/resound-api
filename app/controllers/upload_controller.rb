@@ -1,7 +1,7 @@
 class UploadController < ApplicationController
   require 'transcoder'
-  
-  FFMPEG_PATH = '/usr/local/bin/ffmpeg'
+
+  FFMPEG_PATH = Rails.application.config.store_manage[:ffmpeg_path]
 
   def index
   end
@@ -13,7 +13,8 @@ class UploadController < ApplicationController
       transcode_file!
       cleanup!
       render status: :created, json: {
-          fileSize: File.size(final_file_path)
+          fileSize: File.size(final_flac_path),
+          url: final_flac_path
       }
       return
     end
@@ -69,6 +70,10 @@ class UploadController < ApplicationController
 
   def final_file_path
     File.join final_file_directory, params[:flowFilename]
+  end
+
+  def final_flac_path
+    "#{final_file_path}.flac"
   end
 
   def final_file_directory

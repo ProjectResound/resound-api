@@ -21,6 +21,7 @@ RSpec.describe UploadController do
         test_file = 'test.wav'
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'controllers', test_file), 'audio/wav')
         allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
+        allow(File).to receive(:size)
 
         expect(@controller).to receive(:combine_file!) { true }
         expect(@controller).to receive(:transcode_file!) { true }
@@ -36,7 +37,8 @@ RSpec.describe UploadController do
         test_file = 'test.wav'
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'controllers', test_file), 'audio/wav')
         allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
-
+        allow(File).to receive(:size)
+        allow(File).to receive(:exists?).and_return(true)
         expect(@controller).to receive(:combine_file!) { true }
         expect_any_instance_of(Transcoder).to receive(:to_flac).and_return(true)
 

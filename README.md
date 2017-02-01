@@ -1,5 +1,14 @@
-# upload-api
+# Resound API
 
-This is a proof of concept.  It is the endpoint to our client-side Flow JS proof of concept.  The meat of the code is based off of the Ruby backend code [from flow.js](https://github.com/flowjs/flow.js/tree/master/samples) The endpoint accepts file chunks and when it gets the last chunk, it concatenates all the files together into one final file and returns a checksum of the final file.
+The backend that all of Resound's apps hook into.  Currently, it only does 
+one thing.  For quick setup:
 
-This API has been deployed to an AWS beanstalk instance.  Ask the developer for details of the beanstalk.
+1. `docker pull scprdev/resound-api`
+2. `docker run -d -p 80:3000 resound-api`
+
+That will download and run a container that contains the API. You will be
+able to access the API from your docker-machine's IP.
+
+## Upload
+Clients upload chunks of files. Once the last chunk is received, Resound API
+stitches the chunks together and transcodes it into FLAC.
