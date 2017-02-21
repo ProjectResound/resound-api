@@ -35,8 +35,22 @@ describe Transcoder do
     end
     input_file = '/tmp/input.flac'
     output_file = '/tmp/output.flac'
+    title = 'title'
+    contributor = 'contributor'
+
     it 'raises an error when there is no binary path' do
-      expect{@transcoder.to_flac(input_file, output_file)}.to raise_error StandardError
+      expect{@transcoder.to_flac(
+          file: input_file,
+          output_file: output_file,
+          title: title,
+          contributor: contributor)}.to raise_error StandardError
+    end
+
+    it 'raises an error when no title is supplied' do
+      expect{@transcoder.to_flac(
+          file: input_file,
+          output_file: output_file,
+          contributor: contributor)}.to raise_error ArgumentError
     end
 
     it 'returns a path to output file' do
@@ -44,7 +58,10 @@ describe Transcoder do
       response = ['stdin', 'stdout', 'stderr', StubStatus]
       allow(Open3).to receive(:popen3).and_yield(*response)
       @transcoder.binary_path = 'some/path'
-      expect(@transcoder.to_flac(input_file, output_file)).to be output_file
+      expect(@transcoder.to_flac(file: input_file,
+                                 output_file: output_file,
+                                 title: title,
+                                 contributor: contributor)).to be output_file
     end
   end
 end

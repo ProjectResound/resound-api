@@ -60,7 +60,12 @@ class UploadController < ApplicationController
   def transcode_file!
     transcoder = Transcoder.new()
     transcoder.binary_path = FFMPEG_PATH
-    transcoder.to_flac(final_file_path, "#{final_file_path}.flac")
+    transcoder.to_flac(
+      file: final_file_path,
+      output_file: "#{final_file_path}.flac",
+      title: params[:title],
+      contributor: params[:contributor]
+    )
   end
 
   def cleanup!
