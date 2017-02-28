@@ -20,8 +20,10 @@ RSpec.describe UploadController do
       it 'combines all the chunks and returns a 201 status' do
         test_file = 'test.wav'
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'controllers', test_file), 'audio/wav')
-        allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
         allow(File).to receive(:size)
+        allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
 
         expect(@controller).to receive(:combine_file!) { true }
         expect(@controller).to receive(:transcode_file!) { true }
@@ -29,7 +31,8 @@ RSpec.describe UploadController do
         post :post, params: { file: file,
                       flowTotalChunks: 2,
                       flowIdentifier: '123-lalala1',
-                      flowFilename: 'lalala.wav' }
+                      flowFilename: 'lalala.wav',
+                      title: 'lalad'}
 
         expect(response.status).to eq 201
       end
@@ -39,13 +42,17 @@ RSpec.describe UploadController do
         allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
         allow(File).to receive(:size)
         allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with('tmp/final/test.wav.flac')
+
         expect(@controller).to receive(:combine_file!) { true }
         expect_any_instance_of(Transcoder).to receive(:to_flac).and_return(true)
 
         post :post, params: { file: file,
                               flowTotalChunks: 2,
                               flowIdentifier: '123-lalala1',
-                              flowFilename: 'lalala.wav' }
+                              flowFilename: test_file,
+                              title: 'test title' }
       end
     end
   end

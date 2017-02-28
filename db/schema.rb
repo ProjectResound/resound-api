@@ -1,15 +1,26 @@
-# This file is auto-generated from the current state of the database. Instead
-# of editing this file, please use the migrations feature of Active Record to
-# incrementally modify your database, and then regenerate this schema definition.
-#
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
-#
-# It's strongly recommended that you check this file into your version control system.
-
-ActiveRecord::Schema.define(version: 0) do
-
+Sequel.migration do
+  change do
+    create_table(:audios) do
+      primary_key :id
+      column :title, "text", :null=>false
+      column :filename, "text", :null=>false
+      column :created_at, "timestamp without time zone"
+      column :updated_at, "timestamp without time zone"
+      column :file_data, "text"
+      
+      index [:filename], :name=>:audios_filename_key, :unique=>true
+    end
+    
+    create_table(:schema_migrations) do
+      column :filename, "text", :null=>false
+      
+      primary_key [:filename]
+    end
+  end
+end
+Sequel.migration do
+  change do
+    self << "SET search_path TO \"$user\", public"
+    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20170228172131_create_audios.rb')"
+  end
 end

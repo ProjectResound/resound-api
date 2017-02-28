@@ -11,6 +11,7 @@ class UploadController < ApplicationController
     if last_chunk?
       combine_file!
       transcode_file!
+      create_new_audio
       cleanup!
       render status: :created, json: {
           fileSize: File.size(final_flac_path),
@@ -28,15 +29,20 @@ class UploadController < ApplicationController
     # Ensure required paths exist
     FileUtils.mkpath chunk_file_directory
     # Move the temporary file upload to the temporary chunk file path
-    FileUtils.mv params['file'].tempfile, chunk_file_path, force: true
+    FileUtils.mv params['file'].tempfile, chunk_file_path(params[:flowFilename], params[:flowChunkNumber]), force: true
   end
 
   def last_chunk?
-    file_chunks.size == params[:flowTotalChunks].to_i
+    for i in 1..params[:flowTotalChunks].to_i
+      if !File.exists?(chunk_file_path(params[:flowFilename], i))
+        return false
+      end
+    end
+    return true
   end
 
-  def chunk_file_path
-    File.join(chunk_file_directory, "#{params[:flowFilename]}.part#{params[:flowChunkNumber]}")
+  def chunk_file_path(fileName, number)
+    File.join(chunk_file_directory, "#{fileName}.part#{number}")
   end
 
   def chunk_file_directory
@@ -62,10 +68,19 @@ class UploadController < ApplicationController
     transcoder.binary_path = FFMPEG_PATH
     transcoder.to_flac(
       file: final_file_path,
-      output_file: "#{final_file_path}.flac",
+      output_file: final_flac_path,
       title: params[:title],
       contributor: params[:contributor]
     )
+  end
+
+  def create_new_audio
+    audio = Audio.new(
+      title: params[:title],
+      filename: params[:flowFilename],
+      file: File.open(final_flac_path)
+    )
+    audio.save
   end
 
   def cleanup!
