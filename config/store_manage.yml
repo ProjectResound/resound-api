@@ -3,3 +3,6 @@ production:
 
 development:
   ffmpeg_path: '/usr/local/bin/ffmpeg'
+
+test:
+  ffmpeg_path: '/usr/local/bin/ffmpeg'
