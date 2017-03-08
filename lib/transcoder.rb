@@ -2,19 +2,11 @@ class Transcoder
   require 'open3'
 
   def initialize
-
+    @binary_path = Rails.application.config.store_manage[:ffmpeg_path]
   end
 
   def logger
     Rails.logger
-  end
-
-  def binary_path=(path)
-    if File.exists?(path)
-      @binary_path = path
-    else
-      raise ArgumentError, "Not a valid path", caller
-    end
   end
 
   def to_flac(file:, output_file:, title:, contributor:)

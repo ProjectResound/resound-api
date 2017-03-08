@@ -20,16 +20,16 @@ gem 'puma', '~> 3.0'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
-
 gem 'responders', '~> 2.3.0'
+gem 'sinatra', github: 'sinatra/sinatra', branch: 'master'
+gem 'resque', '~> 1.27.0'
+gem 'resque_solo', '~> 0.3.0'
 
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.
 gem 'aws-sdk', '~> 2.1'
-
 gem 'sequel', '~> 4.43.0'
 gem 'sequel-rails', '~> 0.9.14'
 gem 'sequel_postgresql_triggers'
-
 # file uploading
 gem 'shrine', '~> 2.5.0'
 

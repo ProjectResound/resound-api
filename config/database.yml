@@ -1,24 +1,17 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
-#
 default: &default
   adapter: postgresql
   pool: 5
   timeout: 5000
   encoding: utf8
-  locale: en_US.UTF-8
+  locale: en_US.utf8
+  host: db
+  port: 5432
 
 development:
   <<: *default
   database: resound_dev
-  username: louise.yang
+  username: postgres
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
   database: resound_test
@@ -27,3 +20,5 @@ test:
 production:
   <<: *default
   database: resound
+  username: postgres
+

@@ -9,4 +9,10 @@ class Audio < Sequel::Model
     validates_presence [:title]
     validates_min_length 4, :title
   end
+
+  def self.by_filename(filename)
+    where(filename: filename)
+  end
 end
+
+Audio.finder :by_filename
