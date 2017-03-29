@@ -11,7 +11,7 @@ gem 'puma', '~> 3.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 3.0'
+gem 'redis', '~> 3.0'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -32,6 +32,8 @@ gem 'sequel-rails', '~> 0.9.14'
 gem 'sequel_postgresql_triggers'
 # file uploading
 gem 'shrine', '~> 2.5.0'
+
+gem 'foreman', '~> 0.84.0'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

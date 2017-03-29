@@ -10,7 +10,8 @@ default: &default
 development:
   <<: *default
   database: resound_dev
-  username: postgres
+  username: louise.yang
+  host: localhost
 
 test:
   <<: *default

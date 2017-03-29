@@ -20,9 +20,6 @@ module Api::V1
                        filename: params[:flowFilename],
                        title: params[:title],
                        contributor: params[:contributor] })
-
-        render status: :created, json: { audio_id: audio.id }
-        return
       end
 
       render status: :ok
