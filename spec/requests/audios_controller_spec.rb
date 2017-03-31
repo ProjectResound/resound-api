@@ -15,7 +15,8 @@ describe Api::V1::AudiosController do
     end
 
     context 'when a last chunk is received' do
-      it 'combines all the chunks and returns a 201 status' do
+      it 'enqueues a job' do
+        ActiveJob::Base.queue_adapter = :test
         test_file = 'test.wav'
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
         allow(File).to receive(:size)
@@ -23,13 +24,38 @@ describe Api::V1::AudiosController do
         allow(File).to receive(:open).and_call_original
         allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
 
+        expect {
         post '/api/v1/audios', params: { file: file,
-                      flowTotalChunks: 2,
-                      flowIdentifier: '123-lalala1',
-                      flowFilename: 'lalala.wav',
-                      title: 'lalad'}
+                                         flowTotalChunks: 2,
+                                         flowIdentifier: '123-lalala1',
+                                         flowFilename: 'lalala.wav',
+                                         title: 'lalad'}
+        }.to have_enqueued_job(AudioProcessing)
+      end
+    end
+  end
 
-        expect(response.status).to eq 201
+  describe 'GET' do
+    context 'when it matches an object' do
+      it 'returns an audio object' do
+        title = 'title mcTitle'
+        audio = Audio.create(
+            title: title,
+            filename: 'filename')
+
+        get '/api/v1/audios', params: { filename: audio.filename }
+
+        expect(response.status).to eq 200
+        expect(json[0]['title']).to eq(title)
+      end
+    end
+    context 'when there is no object' do
+      audio = Audio.new()
+      it 'returns nothing' do
+        get '/api/v1/audios', params: { filename: audio.filename }
+
+        expect(response.status).to eq 200
+        expect(json).to be_empty
       end
     end
   end

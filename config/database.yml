@@ -3,7 +3,7 @@ default: &default
   pool: 5
   timeout: 5000
   encoding: utf8
-  locale: en_US.utf8
+  locale: en_US.UTF-8
   host: db
   port: 5432
 
@@ -17,6 +17,7 @@ test:
   <<: *default
   database: resound_test
   username: louise.yang
+  host: localhost
 
 production:
   <<: *default

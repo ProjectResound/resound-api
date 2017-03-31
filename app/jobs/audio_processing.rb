@@ -1,19 +1,19 @@
-class AudioProcessing
+class AudioProcessing < ActiveJob::Base
   include Resque::Plugins::UniqueJob
   @queue = :medium
 
-  def self.perform(opts)
+  def perform(opts)
     begin
       flow_service = ::FlowService.new(
-          identifier: opts['identifier'],
-          filename: opts['filename'],
-          title: opts['title'],
-          contributor: opts['contributor'])
+          identifier: opts[:identifier],
+          filename: opts[:filename],
+          title: opts[:title],
+          contributor: opts[:contributor])
 
       flow_service.combine_files
       file_path = flow_service.transcode_file
 
-      if audio = Audio.first(filename: opts['filename'])
+      if audio = Audio.first(filename: opts[:filename])
         audio.file = File.open(file_path)
         audio.save
         flow_service.clean
@@ -21,7 +21,14 @@ class AudioProcessing
                                      {
                                        audio_id: audio.id,
                                        status: 'success',
-                                       filename: opts['filename']
+                                       filename: opts[:filename]
+                                     }
+      else
+        ActionCable.server.broadcast 'FilesChannel',
+                                     {
+                                         status: 'failed',
+                                         trace: "Could not find audio id: #{audio.id}",
+                                         filename: opts[:filename]
                                      }
       end
     rescue StandardError => error
@@ -29,7 +36,7 @@ class AudioProcessing
                                     {
                                         status: 'failed',
                                         trace: error,
-                                        filename: opts['filename']
+                                        filename: opts[:filename]
                                     }
     end
   end

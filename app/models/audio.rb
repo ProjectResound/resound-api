@@ -16,3 +16,4 @@ class Audio < Sequel::Model
 end
 
 Audio.finder :by_filename
+Audio.set_allowed_columns :title, :filename

@@ -1,4 +1,5 @@
 require 'sequel'
+require 'support/request_helpers'
 
 DB = Sequel.connect(ENV['POSTGRES_TEST_URL'])
 
@@ -105,4 +106,5 @@ RSpec.configure do |config|
     DB.transaction(rollback: :always, auto_savepoint: true){ example.run }
   end
 
+  config.include Requests::JsonHelpers, type: :request
 end

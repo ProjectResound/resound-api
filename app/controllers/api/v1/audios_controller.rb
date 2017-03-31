@@ -1,10 +1,19 @@
 module Api::V1
   class AudiosController < BaseController
+    before_action :find_audio, only: [:show]
+
     def index
-      @audio = Audio.all
-      respond_with @audio do |format|
-        format.json { render :json => @audio }
+      if params[:filename]
+        @audio = Audio.by_filename(params[:filename])
+      else
+        @audio = Audio.all
       end
+
+      render json: @audio
+    end
+
+    def show
+      render json: @audio.as_json
     end
 
     def create
@@ -14,22 +23,25 @@ module Api::V1
           audio.title = params[:title]
           audio.save
         else
-          audio = Audio.create(
+          Audio.create(
                            title: params[:title],
                            filename: params[:flowFilename])
         end
-
-        Resque.enqueue(AudioProcessing,
-                       { identifier: params[:flowIdentifier],
-                       filename: params[:flowFilename],
-                       title: params[:title],
-                       contributor: params[:contributor] })
+        AudioProcessing.perform_later(
+            { identifier: params[:flowIdentifier],
+              filename: params[:flowFilename],
+              title: params[:title],
+              contributor: params[:contributor] }
+        )
       end
-
       render status: :ok
     end
 
     private
+
+    def find_audio
+      @audio = Audio.find(params[:id])
+    end
 
     def save_file!
       # Ensure required paths exist
