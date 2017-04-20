@@ -17,7 +17,7 @@ class AudioProcessing
         audio.file = File.open(file_path)
         audio.save
         flow_service.clean
-        ActionCable.server.broadcast 'files',
+        ActionCable.server.broadcast 'FilesChannel',
                                      {
                                        audio_id: audio.id,
                                        status: 'success',
@@ -25,7 +25,7 @@ class AudioProcessing
                                      }
       end
     rescue StandardError => error
-      ActionCable.server.broadcast 'files',
+      ActionCable.server.broadcast 'FilesChannel',
                                     {
                                         status: 'failed',
                                         trace: error,

@@ -1,5 +1,5 @@
 class FilesChannel < ApplicationCable::Channel
   def subscribed
-    stream_from 'files'
+    stream_from 'FilesChannel'
   end
 end
