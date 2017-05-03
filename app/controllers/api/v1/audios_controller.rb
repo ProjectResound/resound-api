@@ -1,6 +1,10 @@
 module Api::V1
   class AudiosController < BaseController
     def index
+      @audio = Audio.all
+      respond_with @audio do |format|
+        format.json { render :json => @audio }
+      end
     end
 
     def create
