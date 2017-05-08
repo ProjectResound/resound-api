@@ -1,0 +1,14 @@
+default: &default
+  adapter: postgresql
+  pool: 5
+  timeout: 5000
+  encoding: utf8
+  locale: en_US.UTF-8
+  host: db
+  port: 5432
+
+test:
+  <<: *default
+  database: circle_ruby_test
+  username: ubuntu
+  host: localhost

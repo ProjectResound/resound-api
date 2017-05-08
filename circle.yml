@@ -4,3 +4,4 @@ machine:
 database:
   override:
     - cp config/secrets.yml.example config/secrets.yml
+    - cp config/database.ci.yml config/database.yml
