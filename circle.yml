@@ -1,0 +1,6 @@
+machine:
+  environment:
+    POSTGRES_TEST_URL: postgres://ubuntu@localhost:5432/circle_ruby_test
+database:
+  override:
+    - cp config/secrets.yml.example config/secrets.yml
