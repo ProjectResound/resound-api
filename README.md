@@ -1,4 +1,4 @@
-# Resound API
+# Resound API [![CircleCI](https://circleci.com/gh/ProjectResound/resound-api.svg?style=svg)](https://circleci.com/gh/ProjectResound/resound-api)
 
 The backend that all of Resound's apps hook into.
 

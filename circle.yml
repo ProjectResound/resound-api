@@ -1,13 +1,11 @@
 machine:
   environment:
     POSTGRES_TEST_URL: postgres://ubuntu@localhost:5432/circle_ruby_test
-
-  test:
-    pre:
-      - bundle exec rake db:create
-      - bundle exec rake db:migrate
+    SECRET_KEY_BASE: wallawallawashington
 
 database:
   override:
     - cp config/secrets.yml.example config/secrets.yml
     - cp config/database.ci.yml config/database.yml
+    - bundle exec rake db:create
+    - bundle exec rake db:migrate
