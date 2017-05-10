@@ -7,6 +7,7 @@ Sequel.migration do
       column :created_at, "timestamp without time zone"
       column :updated_at, "timestamp without time zone"
       column :file_data, "text"
+      column :duration, "numeric"
       
       index [:filename], :name=>:audios_filename_key, :unique=>true
     end
@@ -18,9 +19,10 @@ Sequel.migration do
     end
   end
 end
-Sequel.migration do
-  change do
-    self << "SET search_path TO \"$user\", public"
-    self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20170228172131_create_audios.rb')"
-  end
-end
+              Sequel.migration do
+                change do
+                  self << "SET search_path TO \"$user\", public"
+                  self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20170228172131_create_audios.rb')"
+self << "INSERT INTO \"schema_migrations\" (\"filename\") VALUES ('20170510163507_add_duration_to_audio.rb')"
+                end
+              end

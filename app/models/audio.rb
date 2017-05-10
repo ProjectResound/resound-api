@@ -1,6 +1,7 @@
 class Audio < Sequel::Model
   include FileUploader[:file]
   include ActiveModel::ForbiddenAttributesProtection
+  include ActiveModel::Serialization
 
   plugin :validation_helpers
 

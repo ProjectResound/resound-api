@@ -8,8 +8,7 @@ module Api::V1
       else
         @audio = Audio.all
       end
-
-      render json: @audio
+      render json: @audio.as_json
     end
 
     def show

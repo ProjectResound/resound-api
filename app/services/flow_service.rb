@@ -15,13 +15,13 @@ class FlowService
 
   def transcode_file
     transcoder = Transcoder.new()
-    transcoder.to_flac(
+    duration = transcoder.to_flac(
         file: final_file_path,
         output_file: final_flac_path,
         title: @title,
         contributor: @contributor
     )
-    return final_flac_path
+    return { final_flac_path: final_flac_path, duration: duration }
   end
 
   def combine_files
