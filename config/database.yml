@@ -3,7 +3,7 @@ default: &default
   pool: 5
   timeout: 5000
   encoding: utf8
-  locale: en_US.UTF-8
+  locale: <%= ENV['LANG'] %>
   host: db
   port: 5432
 
