@@ -26,12 +26,10 @@ gem 'responders', '~> 2.3.0'
 gem 'sinatra', github: 'sinatra/sinatra', branch: 'master'
 gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
-
+gem 'scenic', '~> 1.4.0'
+gem 'textacular', '~> 4.0.1'
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.
 gem 'aws-sdk', '~> 2.1'
-gem 'sequel', '~> 4.43.0'
-gem 'sequel-rails', '~> 0.9.14'
-gem 'sequel_postgresql_triggers'
 # file uploading
 gem 'shrine', '~> 2.5.0'
 
@@ -41,7 +39,9 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
   gem 'rspec-rails', '~> 3.5'
+  gem 'factory_girl_rails', '~> 4.8.0'
 end
+
 
 group :development do
   gem 'listen', '~> 3.0.5'

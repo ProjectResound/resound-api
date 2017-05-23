@@ -1,20 +1,14 @@
-class Audio < Sequel::Model
+class Audio < ApplicationRecord
   include FileUploader[:file]
   include ActiveModel::ForbiddenAttributesProtection
   include ActiveModel::Serialization
 
-  plugin :validation_helpers
+  extend Textacular
 
-  def validate
-    super
-    validates_presence [:title]
-    validates_min_length 4, :title
-  end
+  validates :title, presence: true, length: { minimum: 4 }
+  validates :filename, presence: true, uniqueness: true
 
   def self.by_filename(filename)
     where(filename: filename)
   end
 end
-
-Audio.finder :by_filename
-Audio.set_allowed_columns :title, :filename

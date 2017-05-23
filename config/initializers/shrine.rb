@@ -2,7 +2,6 @@ require 'shrine'
 require 'shrine/storage/file_system'
 require 'shrine/storage/s3'
 
-Shrine.plugin :sequel
 Shrine.plugin :logging, logger: Rails.logger
 Shrine.plugin :validation_helpers
 

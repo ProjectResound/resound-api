@@ -18,7 +18,7 @@ module Api::V1
     def create
       save_file!
       if last_chunk?
-        if audio = Audio.first_by_filename(params[:flowFilename])
+        if audio = Audio.by_filename(params[:flowFilename]).first
           audio.title = params[:title]
           audio.save
         else
@@ -34,6 +34,11 @@ module Api::V1
         )
       end
       render status: :ok
+    end
+
+    def search
+      results = Audio.search(params[:q])
+      render json: results.as_json
     end
 
     private

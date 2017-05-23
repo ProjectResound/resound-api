@@ -10,6 +10,11 @@ on your docker machine.
 1. `docker pull scprdev/resound-api`
 2. `docker run -d -p 80:3000 resound-api`
 
+## Postgres Features
+If you're using postgres for the database, there is an additional script you can run
+to add full text indexing on the audio table:
+`bundle exec rake db:add_index`
+
 ### Prerequisites
 
 [Docker](https://www.docker.com/)

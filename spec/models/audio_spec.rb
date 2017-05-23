@@ -15,15 +15,17 @@ RSpec.describe Audio, type: :model do
     expect(Audio.new(title: 'title')).to be_valid
   end
 
-  describe "first_by_filename" do
-    it "returns nil when no records are found" do
-      expect(Audio.first_by_filename('something.wav')).to be_nil
+  describe "search" do
+    it "returns a result if there is a match" do
+      audio = create(:audio, title: 'hello world')
+      results = Audio.search('hello')
+
+      expect(results).to exist
+      expect(results.first.id).to be(audio.id)
     end
 
-    it "returns an object with that filename" do
-      filename = 'file.name'
-      audio = Audio.create(title: 'walla', filename: filename)
-      expect(Audio.first_by_filename(filename).id).to be(audio.id)
+    it "returns an empty array if there is no match" do
+      expect(Audio.search('mojitos')).to be_empty
     end
   end
 end

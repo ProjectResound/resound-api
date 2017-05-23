@@ -14,7 +14,7 @@ class AudioProcessing < ActiveJob::Base
 
       flow_service.combine_files
       transcoded = flow_service.transcode_file
-      if audio = Audio.first(filename: opts[:filename])
+      if audio = Audio.find_by_filename(opts[:filename])
         audio.file = File.open(transcoded[:final_flac_path])
         audio.duration = DurationParser.to_seconds(transcoded[:duration])
         audio.save
