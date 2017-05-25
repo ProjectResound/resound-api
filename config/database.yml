@@ -10,13 +10,13 @@ default: &default
 development:
   <<: *default
   database: resound_dev
-  username: louise.yang
+  username: <%= ENV['whoami'] %>
   host: localhost
 
 test:
   <<: *default
   database: resound_test
-  username: louise.yang
+  username: <%= ENV['whoami'] %>
   host: localhost
 
 production:
