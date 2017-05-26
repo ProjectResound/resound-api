@@ -12,7 +12,7 @@ RSpec.describe Audio, type: :model do
   end
 
   it "is valid with valid attributes" do
-    expect(Audio.new(title: 'title')).to be_valid
+    expect(Audio.new(filename: 'file.wav', title: 'title')).to be_valid
   end
 
   describe "search" do
