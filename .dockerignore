@@ -1,2 +1,3 @@
-/tmp/final
-/tmp/flow
+tmp/final/**/*
+tmp/flow/**/*
+public/uploads/**/*
