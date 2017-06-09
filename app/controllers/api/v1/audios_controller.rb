@@ -1,5 +1,7 @@
 module Api::V1
   class AudiosController < BaseController
+    include Secured
+
     before_action :find_audio, only: [:show]
 
     def index

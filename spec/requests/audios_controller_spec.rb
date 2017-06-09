@@ -1,4 +1,10 @@
 describe Api::V1::AudiosController do
+  before(:each) do |example|
+    unless example.metadata[:skip_auth]
+      allow_any_instance_of(Api::V1::AudiosController).to receive(:authenticate_request!).and_return(true)
+    end
+  end
+
   describe 'CREATE' do
     context 'when a non-last chunk is received' do
       it 'does not combine all the chunks' do
@@ -36,6 +42,12 @@ describe Api::V1::AudiosController do
   end
 
   describe 'GET' do
+    context 'when unauthorized' do
+      it 'returns 401', skip_auth: true do
+        get '/api/v1/audios', params: { filename: 'something' }
+        expect(response.status).to eq(401)
+      end
+    end
     context 'when it matches an object' do
       it 'returns an audio object' do
         title = 'title mcTitle'

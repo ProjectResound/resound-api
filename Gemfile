@@ -28,6 +28,7 @@ gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
 gem 'scenic', '~> 1.4.0'
 gem 'textacular', '~> 4.0.1'
+gem 'jwt', '~> 1.5.6'
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.
 gem 'aws-sdk', '~> 2.1'
 # file uploading
