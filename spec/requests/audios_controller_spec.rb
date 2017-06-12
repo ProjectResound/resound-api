@@ -1,4 +1,6 @@
 describe Api::V1::AudiosController do
+  API_ENDPOINT = '/api/v1/audios/'
+
   before(:each) do |example|
     unless example.metadata[:skip_auth]
       allow_any_instance_of(Api::V1::AudiosController).to receive(:authenticate_request!).and_return(true)
@@ -12,7 +14,7 @@ describe Api::V1::AudiosController do
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
         allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
 
-        post '/api/v1/audios', params: { file: file,
+        post API_ENDPOINT, params: { file: file,
              flowTotalChunks: 10,
              flowIdentifier: '123-lalala1' }
 
@@ -21,22 +23,28 @@ describe Api::V1::AudiosController do
     end
 
     context 'when a last chunk is received' do
-      it 'enqueues a job' do
-        ActiveJob::Base.queue_adapter = :test
-        test_file = 'test.wav'
-        file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
+      ActiveJob::Base.queue_adapter = :test
+      test_file = 'test.wav'
+      file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
+
+      filename = 'lalala.wav'
+
+      it 'enqueues a job and creates a new audio object' do
         allow(File).to receive(:size)
         allow(File).to receive(:exists?).and_return(true)
         allow(File).to receive(:open).and_call_original
         allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
 
         expect {
-        post '/api/v1/audios', params: { file: file,
+        post API_ENDPOINT, params: { file: file,
                                          flowTotalChunks: 2,
                                          flowIdentifier: '123-lalala1',
-                                         flowFilename: 'lalala.wav',
+                                         flowFilename: filename,
                                          title: 'lalad'}
         }.to have_enqueued_job(AudioProcessing)
+
+        audio = Audio.by_filename(filename).first
+        expect(audio.filename).to eq(filename)
       end
     end
   end
@@ -44,7 +52,7 @@ describe Api::V1::AudiosController do
   describe 'GET' do
     context 'when unauthorized' do
       it 'returns 401', skip_auth: true do
-        get '/api/v1/audios', params: { filename: 'something' }
+        get API_ENDPOINT, params: { filename: 'something' }
         expect(response.status).to eq(401)
       end
     end
@@ -55,7 +63,7 @@ describe Api::V1::AudiosController do
             title: title,
             filename: 'filename')
 
-        get '/api/v1/audios', params: { filename: audio.filename }
+        get API_ENDPOINT, params: { filename: audio.filename }
 
         expect(response.status).to eq 200
         expect(json[0]['title']).to eq(title)
@@ -64,11 +72,40 @@ describe Api::V1::AudiosController do
     context 'when there is no object' do
       audio = Audio.new()
       it 'returns nothing' do
-        get '/api/v1/audios', params: { filename: audio.filename }
+        get API_ENDPOINT, params: { filename: audio.filename }
 
         expect(response.status).to eq 200
         expect(json).to be_empty
       end
+    end
+  end
+
+  describe 'SEARCH' do
+    before(:each) do
+      Audio.create(
+          title: 'one two three',
+          filename: 'filename1',
+          tags: 'planes, trains, and automobiles'
+      )
+      Audio.create(
+          title: 'training day',
+          filename: 'filename2',
+          tags: 'movies, denzel washington'
+      )
+      Audio.create(
+          title: 'clueless',
+          filename: 'no matchy',
+          tags: 'movies, alicia'
+      )
+    end
+    it 'returns matching results' do
+      get "#{API_ENDPOINT}search", params: { q: 'train'}
+      expect(json.size).to eq(2)
+    end
+
+    it 'returns empty array when nothing matches' do
+      get "#{API_ENDPOINT}search", params: { q: 'skelton key'}
+      expect(json.size).to eq(0)
     end
   end
 end

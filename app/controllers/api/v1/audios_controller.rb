@@ -10,24 +10,23 @@ module Api::V1
       else
         @audio = Audio.all
       end
-      render json: @audio.as_json
+      render json: @audio
     end
 
     def show
-      render json: @audio.as_json
+      render json: @audio
     end
 
     def create
       save_file!
       if last_chunk?
-        if audio = Audio.by_filename(params[:flowFilename]).first
-          audio.title = params[:title]
-          audio.save
-        else
-          Audio.create(
-                           title: params[:title],
-                           filename: params[:flowFilename])
-        end
+        Audio.update_or_create_by_filename(
+                 filename: params[:flowFilename],
+                 contributor: params[:contributor],
+                 title: params[:title],
+                 tags: params[:tags]
+        )
+
         AudioProcessing.perform_later(
             { identifier: params[:flowIdentifier],
               filename: params[:flowFilename],
@@ -40,7 +39,7 @@ module Api::V1
 
     def search
       results = Audio.search(params[:q])
-      render json: results.as_json
+      render json: results
     end
 
     private

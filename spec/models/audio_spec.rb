@@ -28,4 +28,21 @@ RSpec.describe Audio, type: :model do
       expect(Audio.search('mojitos')).to be_empty
     end
   end
+
+  describe "update_or_create_by_filename()" do
+    it "creates a new object if there is no existing one" do
+      expect{Audio.update_or_create_by_filename(
+          filename: 'blahblahblah123.wav',
+          title: 'should be a new one')}.to change{Audio.count}.by(1)
+    end
+
+    it "updates an existing object if there is already one by the same filename" do
+      filename = 'blah.wav'
+      create(:audio, filename: filename)
+
+      expect{Audio.update_or_create_by_filename(
+          filename: filename,
+          title: 'should be a new one')}.to change{Audio.count}.by(0)
+    end
+  end
 end
