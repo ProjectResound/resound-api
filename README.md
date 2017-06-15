@@ -1,6 +1,6 @@
 # Resound API [![CircleCI](https://circleci.com/gh/ProjectResound/resound-api.svg?style=svg)](https://circleci.com/gh/ProjectResound/resound-api)
 
-The backend that all of Resound's apps hook into.
+The backend that all of Resound's apps hook into. More info about the suite of apps [in the wiki](https://github.com/ProjectResound/planning/wiki)
 
 
 ## Getting Started
