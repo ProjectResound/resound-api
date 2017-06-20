@@ -1,7 +1,4 @@
 class JsonWebToken
-  JWKS_RAW = Net::HTTP.get URI("https://#{Rails.application.secrets.auth0_domain}/.well-known/jwks.json")
-  JWKS_KEYS = Array(JSON.parse(JWKS_RAW)['keys'])
-
   def self.verify(token)
     JWT.decode(token, nil,
                true, # Verify the signature of this token
@@ -15,8 +12,11 @@ class JsonWebToken
   end
 
   def self.jwks_hash
+    jwks_raw = Net::HTTP.get URI("https://#{Rails.application.secrets.auth0_domain}/.well-known/jwks.json")
+    jwks_keys = Array(JSON.parse(jwks_raw)['keys'])
+
     Hash[
-        JWKS_KEYS
+        jwks_keys
             .map do |k|
           [
               k['kid'],
