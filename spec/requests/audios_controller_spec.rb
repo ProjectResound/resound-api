@@ -1,9 +1,14 @@
 describe Api::V1::AudiosController do
-  API_ENDPOINT = '/api/v1/audios/'
+  AUDIO_API_ENDPOINT = '/api/v1/audios/'
 
   before(:each) do |example|
+    @uploader = User.create(uid: '123', nickname: 'louise')
+
+    allow(Net::HTTP).to receive(:start).and_return(double())
     unless example.metadata[:skip_auth]
-      allow_any_instance_of(Api::V1::AudiosController).to receive(:authenticate_request!).and_return(true)
+      allow_any_instance_of(Api::V1::AudiosController).to receive(:auth_token).and_return(
+          {'sub' => @uploader.uid, 'nickname' => @uploader.nickname}
+      )
     end
   end
 
@@ -14,9 +19,9 @@ describe Api::V1::AudiosController do
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
         allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
 
-        post API_ENDPOINT, params: { file: file,
-             flowTotalChunks: 10,
-             flowIdentifier: '123-lalala1' }
+        post AUDIO_API_ENDPOINT, params: {file: file,
+                                          flowTotalChunks: 10,
+                                          flowIdentifier: '123-lalala1' }
 
         expect(response.status).to eq 200
       end
@@ -36,11 +41,11 @@ describe Api::V1::AudiosController do
         allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
 
         expect {
-        post API_ENDPOINT, params: { file: file,
-                                         flowTotalChunks: 2,
-                                         flowIdentifier: '123-lalala1',
-                                         flowFilename: filename,
-                                         title: 'lalad'}
+        post AUDIO_API_ENDPOINT, params: {file: file,
+                                          flowTotalChunks: 2,
+                                          flowIdentifier: '123-lalala1',
+                                          flowFilename: filename,
+                                          title: 'lalad'}
         }.to have_enqueued_job(AudioProcessing)
 
         audio = Audio.by_filename(filename).first
@@ -52,7 +57,7 @@ describe Api::V1::AudiosController do
   describe 'GET' do
     context 'when unauthorized' do
       it 'returns 401', skip_auth: true do
-        get API_ENDPOINT, params: { filename: 'something' }
+        get AUDIO_API_ENDPOINT, params: {filename: 'something' }
         expect(response.status).to eq(401)
       end
     end
@@ -61,9 +66,10 @@ describe Api::V1::AudiosController do
         title = 'title mcTitle'
         audio = Audio.create(
             title: title,
-            filename: 'filename')
+            filename: 'filename',
+            uploader: @uploader)
 
-        get API_ENDPOINT, params: { filename: audio.filename }
+        get AUDIO_API_ENDPOINT, params: {filename: audio.filename }
 
         expect(response.status).to eq 200
         expect(json[0]['title']).to eq(title)
@@ -72,7 +78,7 @@ describe Api::V1::AudiosController do
     context 'when there is no object' do
       audio = Audio.new()
       it 'returns nothing' do
-        get API_ENDPOINT, params: { filename: audio.filename }
+        get AUDIO_API_ENDPOINT, params: {filename: audio.filename }
 
         expect(response.status).to eq 200
         expect(json).to be_empty
@@ -85,26 +91,29 @@ describe Api::V1::AudiosController do
       Audio.create(
           title: 'one two three',
           filename: 'filename1',
-          tags: 'planes, trains, and automobiles'
+          tags: 'planes, trains, and automobiles',
+          uploader: @uploader
       )
       Audio.create(
           title: 'training day',
           filename: 'filename2',
-          tags: 'movies, denzel washington'
+          tags: 'movies, denzel washington',
+          uploader: @uploader
       )
       Audio.create(
           title: 'clueless',
           filename: 'no matchy',
-          tags: 'movies, alicia'
+          tags: 'movies, alicia',
+          uploader: @uploader
       )
     end
     it 'returns matching results' do
-      get "#{API_ENDPOINT}search", params: { q: 'train'}
+      get "#{AUDIO_API_ENDPOINT}search", params: {q: 'train'}
       expect(json.size).to eq(2)
     end
 
     it 'returns empty array when nothing matches' do
-      get "#{API_ENDPOINT}search", params: { q: 'skelton key'}
+      get "#{AUDIO_API_ENDPOINT}search", params: {q: 'skelton key'}
       expect(json.size).to eq(0)
     end
   end

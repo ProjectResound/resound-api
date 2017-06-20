@@ -10,20 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170613180234) do
+ActiveRecord::Schema.define(version: 20170620181412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "audios", force: :cascade do |t|
-    t.string   "title",      null: false
-    t.string   "filename",   null: false
+    t.string   "title",       null: false
+    t.string   "uploader_id", null: false
+    t.string   "filename",    null: false
     t.string   "file_data"
     t.integer  "duration"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
     t.string   "tags"
     t.index "to_tsvector('english'::regconfig, (title)::text)", name: "index_audios_on_title", using: :gin
     t.index ["filename"], name: "index_audios_on_filename", unique: true, using: :btree
   end
+
+  create_table "users", id: false, force: :cascade do |t|
+    t.string "uid",      null: false
+    t.string "nickname"
+    t.index ["uid"], name: "index_users_on_uid", unique: true, using: :btree
+  end
+
 end

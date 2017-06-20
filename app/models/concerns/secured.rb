@@ -9,7 +9,9 @@ module Secured
   private
 
   def authenticate_request!
-    auth_token
+    if uid = auth_token['sub']
+      @user = User.find_by_uid(uid)
+    end
   rescue JWT::VerificationError, JWT::DecodeError
     render json: { errors: ['Not Authenticated'] }, status: :unauthorized
   end
@@ -21,6 +23,6 @@ module Secured
   end
 
   def auth_token
-    JsonWebToken.verify(http_token)
+    JsonWebToken.verify(http_token)[0]
   end
 end

@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Audio, type: :model do
+  before(:each) do
+    @uploader = User.create(uid: '123', nickname: 'louise')
+  end
+
   it "is not valid without a title"  do
     audio = Audio.new(title: nil)
     expect(audio).to_not be_valid
@@ -17,7 +21,7 @@ RSpec.describe Audio, type: :model do
 
   describe "search" do
     it "returns a result if there is a match" do
-      audio = create(:audio, title: 'hello world')
+      audio = create(:audio, title: 'hello world', uploader: @uploader)
       results = Audio.search('hello')
 
       expect(results).to exist
@@ -33,16 +37,18 @@ RSpec.describe Audio, type: :model do
     it "creates a new object if there is no existing one" do
       expect{Audio.update_or_create_by_filename(
           filename: 'blahblahblah123.wav',
-          title: 'should be a new one')}.to change{Audio.count}.by(1)
+          title: 'should be a new one',
+          uploader: @uploader)}.to change{Audio.count}.by(1)
     end
 
     it "updates an existing object if there is already one by the same filename" do
       filename = 'blah.wav'
-      create(:audio, filename: filename)
+      create(:audio, filename: filename, uploader: @uploader)
 
       expect{Audio.update_or_create_by_filename(
           filename: filename,
-          title: 'should be a new one')}.to change{Audio.count}.by(0)
+          title: 'should be a new one',
+          uploader: @uploader)}.to change{Audio.count}.by(0)
     end
   end
 end

@@ -2,6 +2,7 @@ class CreateAudios < ActiveRecord::Migration[5.0]
   def up
     create_table :audios do |t|
       t.string :title, null: false
+      t.string :uploader_id, null: false
       t.string :filename, null: false
       t.string :file_data, text: true
       t.integer :duration

@@ -5,6 +5,8 @@ class Audio < ApplicationRecord
 
   extend Textacular
 
+  belongs_to :uploader, class_name: 'User'
+
   validates :title, presence: true, length: { minimum: 4 }
   validates :filename, presence: true, uniqueness: true
 
@@ -16,11 +18,13 @@ class Audio < ApplicationRecord
     if audio = by_filename(opts[:filename]).first
       audio.title = opts[:title]
       audio.tags = opts[:tags]
+      audio.uploader = opts[:uploader]
     else
       audio = new(
           title: opts[:title],
           filename: opts[:filename],
-          tags: opts[:tags])
+          tags: opts[:tags],
+          uploader: opts[:uploader])
     end
     audio.save
     return audio

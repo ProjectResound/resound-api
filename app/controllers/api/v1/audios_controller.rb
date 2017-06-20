@@ -5,6 +5,7 @@ module Api::V1
     before_action :find_audio, only: [:show]
 
     def index
+      Rails.logger.info("User is: #{@user}")
       if params[:filename]
         @audio = Audio.by_filename(params[:filename])
       else
@@ -24,7 +25,8 @@ module Api::V1
                  filename: params[:flowFilename],
                  contributor: params[:contributor],
                  title: params[:title],
-                 tags: params[:tags]
+                 tags: params[:tags],
+                 uploader: @user
         )
 
         AudioProcessing.perform_later(
