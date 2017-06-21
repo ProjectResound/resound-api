@@ -21,20 +21,14 @@ class Transcoder
         " -metadata artist=\"#{contributor}\" '#{output_file}'"
 
     stdout, stderr, exit_status = Open3.capture3(cmd)
-    duration = stderr.scan(/Duration\:\s([^,]*?),/).last.first
+    if duration_line = stderr.scan(/Duration\:\s([^,]*?),/).last
+      duration = duration_line.first
+    end
 
     if !exit_status.success?
       logger.error(stderr)
       raise StandardError, "Unsuccessful command: #{cmd}"
     end
-
-    # Open3.popen3(cmd) do |stdin, stdout, stderr, status|
-    #   logger.info(stdout)
-    #   unless status.value.success?
-    #     logger.error(stderr.read())
-    #     raise StandardError, "Unsuccessful command: #{cmd}"
-    #   end
-    # end
 
     return duration
   end

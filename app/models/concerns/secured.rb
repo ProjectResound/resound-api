@@ -1,6 +1,7 @@
 module Secured
   require 'json_web_token'
   extend ActiveSupport::Concern
+  USER_CACHE_KEY = 'user_cache'
 
   included do
     before_action :authenticate_request!
@@ -10,10 +11,18 @@ module Secured
 
   def authenticate_request!
     if uid = auth_token['sub']
-      @user = User.find_by_uid(uid)
+      @user = Rails.cache.read(cache_key(uid))
+      if !@user
+        @user = User.find_by_uid(uid)
+        Rails.cache.write(cache_key(uid), @user, expires_in: 3.minutes)
+      end
     end
   rescue JWT::VerificationError, JWT::DecodeError
     render json: { errors: ['Not Authenticated'] }, status: :unauthorized
+  end
+
+  def cache_key(uid)
+    "#{USER_CACHE_KEY}:#{uid}"
   end
 
   def http_token

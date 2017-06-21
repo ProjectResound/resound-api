@@ -1,4 +1,6 @@
 class JsonWebToken
+  JWKS_CACHE_KEY = 'jwks_hash_keys'
+
   def self.verify(token)
     JWT.decode(token, nil,
                true, # Verify the signature of this token
@@ -12,19 +14,20 @@ class JsonWebToken
   end
 
   def self.jwks_hash
-    jwks_raw = Net::HTTP.get URI("https://#{Rails.application.secrets.auth0_domain}/.well-known/jwks.json")
-    jwks_keys = Array(JSON.parse(jwks_raw)['keys'])
-
-    Hash[
-        jwks_keys
-            .map do |k|
-          [
-              k['kid'],
-              OpenSSL::X509::Certificate.new(
-                  Base64.decode64(k['x5c'].first)
-              ).public_key
-          ]
-        end
-    ]
+    Rails.cache.fetch(JWKS_CACHE_KEY, expires_in: 1.day) do
+      jwks_raw = Net::HTTP.get URI("https://#{Rails.application.secrets.auth0_domain}/.well-known/jwks.json")
+      jwks_keys = Array(JSON.parse(jwks_raw)['keys'])
+      return Hash[
+          jwks_keys
+              .map do |k|
+            [
+                k['kid'],
+                OpenSSL::X509::Certificate.new(
+                    Base64.decode64(k['x5c'].first)
+                ).public_key
+            ]
+          end
+      ]
+    end
   end
 end

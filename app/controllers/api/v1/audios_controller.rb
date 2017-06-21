@@ -5,7 +5,6 @@ module Api::V1
     before_action :find_audio, only: [:show]
 
     def index
-      Rails.logger.info("User is: #{@user}")
       if params[:filename]
         @audio = Audio.by_filename(params[:filename])
       else
