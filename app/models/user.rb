@@ -1,10 +1,13 @@
 class User < ApplicationRecord
   include ActiveModel::ForbiddenAttributesProtection
   include ActiveModel::Serialization
-
   extend Textacular
 
-  has_many :audios, foreign_key: 'uploader_id'
+  acts_as_paranoid
+
+  has_many :audios,
+           foreign_key: 'uploader_id',
+           dependent: :destroy
 
   self.primary_key = 'uid'
 

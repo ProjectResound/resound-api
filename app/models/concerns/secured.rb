@@ -11,10 +11,10 @@ module Secured
 
   def authenticate_request!
     if uid = auth_token['sub']
-      @user = Rails.cache.read(cache_key(uid))
-      if !@user
-        @user = User.find_by_uid(uid)
-        Rails.cache.write(cache_key(uid), @user, expires_in: 3.minutes)
+      @current_user = Rails.cache.read(cache_key(uid))
+      if !@current_user
+        @current_user = User.find_by_uid(uid)
+        Rails.cache.write(cache_key(uid), @current_user, expires_in: 3.minutes)
       end
     end
   rescue JWT::VerificationError, JWT::DecodeError

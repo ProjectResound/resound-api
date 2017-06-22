@@ -25,7 +25,7 @@ module Api::V1
                  contributor: params[:contributor],
                  title: params[:title],
                  tags: params[:tags],
-                 uploader: @user
+                 uploader: @current_user
         )
 
         AudioProcessing.perform_later(

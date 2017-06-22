@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170620181412) do
+ActiveRecord::Schema.define(version: 20170622172511) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,8 +29,10 @@ ActiveRecord::Schema.define(version: 20170620181412) do
   end
 
   create_table "users", id: false, force: :cascade do |t|
-    t.string "uid",      null: false
-    t.string "nickname"
+    t.string   "uid",        null: false
+    t.string   "nickname"
+    t.datetime "deleted_at"
+    t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["uid"], name: "index_users_on_uid", unique: true, using: :btree
   end
 
