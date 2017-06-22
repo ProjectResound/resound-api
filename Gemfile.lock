@@ -11,6 +11,14 @@ GIT
       rack-protection (= 2.0.0.rc1)
       tilt (~> 2.0)
 
+GIT
+  remote: git@github.com:shanebonham/acts_as_paranoid.git
+  revision: 0d4af4e0b1bc7035a0b6be87237986ffbf6b3843
+  specs:
+    acts_as_paranoid (1.0.0.beta)
+      activerecord (>= 4.2, < 6.0)
+      activesupport (>= 4.2, < 6.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -56,9 +64,6 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    acts_as_paranoid (0.5.0)
-      activerecord (>= 4.0, < 5.1)
-      activesupport (>= 4.0, < 5.1)
     arel (7.1.4)
     aws-sdk (2.8.0)
       aws-sdk-resources (= 2.8.0)
@@ -223,7 +228,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers (~> 0.10.0)
-  acts_as_paranoid (~> 0.5.0)
+  acts_as_paranoid!
   aws-sdk (~> 2.1)
   byebug
   factory_girl_rails (~> 4.8.0)

@@ -116,5 +116,11 @@ describe Api::V1::AudiosController do
       get "#{AUDIO_API_ENDPOINT}search", params: {q: 'skelton key'}
       expect(json.size).to eq(0)
     end
+
+    it "returns a result if there is a match on uploader name" do
+      get "#{AUDIO_API_ENDPOINT}search", params: {q: @uploader.nickname}
+      expect(json.size).to eq(3)
+    end
+
   end
 end

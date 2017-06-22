@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170622172511) do
+ActiveRecord::Schema.define(version: 20170622203820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,5 +35,18 @@ ActiveRecord::Schema.define(version: 20170622172511) do
     t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["uid"], name: "index_users_on_uid", unique: true, using: :btree
   end
+
+
+  create_view "audio_search_engines",  sql_definition: <<-SQL
+      SELECT audios.id,
+      audios.title,
+      audios.filename,
+      audios.tags,
+      audios.duration,
+      audios.created_at,
+      users.nickname AS uploader_nickname
+     FROM (audios
+       JOIN users ON (((audios.uploader_id)::text = (users.uid)::text)));
+  SQL
 
 end

@@ -3,8 +3,6 @@ class Audio < ApplicationRecord
   include ActiveModel::ForbiddenAttributesProtection
   include ActiveModel::Serialization
 
-  extend Textacular
-
   belongs_to :uploader, class_name: 'User'
 
   validates :title, presence: true, length: { minimum: 4 }

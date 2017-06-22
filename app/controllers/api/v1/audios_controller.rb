@@ -39,7 +39,7 @@ module Api::V1
     end
 
     def search
-      results = Audio.search(params[:q])
+      results = AudioSearchEngine.search(params[:q])
       render json: results
     end
 
