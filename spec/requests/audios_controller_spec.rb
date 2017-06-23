@@ -57,7 +57,7 @@ describe Api::V1::AudiosController do
   describe 'GET' do
     context 'when unauthorized' do
       it 'returns 401', skip_auth: true do
-        get AUDIO_API_ENDPOINT, params: {filename: 'something' }
+        get AUDIO_API_ENDPOINT, params: {filename: 'something'}
         expect(response.status).to eq(401)
       end
     end
@@ -69,7 +69,7 @@ describe Api::V1::AudiosController do
             filename: 'filename',
             uploader: @uploader)
 
-        get AUDIO_API_ENDPOINT, params: {filename: audio.filename }
+        get AUDIO_API_ENDPOINT, params: {filename: audio.filename}
 
         expect(response.status).to eq 200
         expect(json[0]['title']).to eq(title)
@@ -78,10 +78,36 @@ describe Api::V1::AudiosController do
     context 'when there is no object' do
       audio = Audio.new()
       it 'returns nothing' do
-        get AUDIO_API_ENDPOINT, params: {filename: audio.filename }
+        get AUDIO_API_ENDPOINT, params: {filename: audio.filename}
 
         expect(response.status).to eq 200
         expect(json).to be_empty
+      end
+    end
+    context 'when user_id is passed in' do
+      before(:each) do
+        @uploader2 = User.create(uid: 'uid2', nickname: 'some other person')
+      end
+
+      it 'returns 3 recent audios from that user' do
+        3.times do |i|
+          Audio.create(title: "title_#{i}", uploader: @uploader, filename: "filename_#{i}.wav")
+        end
+        Audio.create(title: 'title', uploader: @uploader2, filename: 'dontreturn.wav')
+
+        get AUDIO_API_ENDPOINT, params: {working_on: true}
+
+        expect(response.status).to eq 200
+        expect(json.size).to eq 3
+      end
+
+      context 'when user has not uploaded anything' do
+        it 'returns empty array' do
+          get AUDIO_API_ENDPOINT, params: {working_on: true}
+
+          expect(response.status).to eq 200
+          expect(json.size).to eq 0
+        end
       end
     end
   end

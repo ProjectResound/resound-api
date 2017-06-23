@@ -7,6 +7,8 @@ module Api::V1
     def index
       if params[:filename]
         @audio = Audio.by_filename(params[:filename])
+      elsif params[:working_on] == 'true'
+        @audio = Audio.where(uploader_id: @current_user.id).order('created_at DESC').limit(3)
       else
         @audio = Audio.all
       end
