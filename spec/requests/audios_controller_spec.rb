@@ -72,7 +72,7 @@ describe Api::V1::AudiosController do
         get AUDIO_API_ENDPOINT, params: {filename: audio.filename}
 
         expect(response.status).to eq 200
-        expect(json[0]['title']).to eq(title)
+        expect(json['audios'][0]['title']).to eq(title)
       end
     end
     context 'when there is no object' do
@@ -81,7 +81,7 @@ describe Api::V1::AudiosController do
         get AUDIO_API_ENDPOINT, params: {filename: audio.filename}
 
         expect(response.status).to eq 200
-        expect(json).to be_empty
+        expect(json['totalPages']).to eq 0
       end
     end
     context 'when user_id is passed in' do
@@ -98,7 +98,7 @@ describe Api::V1::AudiosController do
         get AUDIO_API_ENDPOINT, params: {working_on: true}
 
         expect(response.status).to eq 200
-        expect(json.size).to eq 3
+        expect(json['totalCount']).to eq 3
       end
 
       context 'when user has not uploaded anything' do
@@ -106,7 +106,7 @@ describe Api::V1::AudiosController do
           get AUDIO_API_ENDPOINT, params: {working_on: true}
 
           expect(response.status).to eq 200
-          expect(json.size).to eq 0
+          expect(json['totalCount']).to eq 0
         end
       end
     end

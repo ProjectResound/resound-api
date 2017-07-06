@@ -4,15 +4,24 @@ module Api::V1
 
     before_action :find_audio, only: [:show]
 
+    PER_PAGE = Rails.env.production? ? 25 : 10
+
     def index
+      page = params[:page] || 1
       if params[:filename]
-        @audio = Audio.by_filename(params[:filename])
+        @audio = Audio.by_filename(params[:filename]).page(1).per(1)
       elsif params[:working_on] == 'true'
-        @audio = Audio.where(uploader_id: @current_user.id).order('created_at DESC').limit(3)
+        @audio = Audio.where(uploader_id: @current_user.id).page(1).order('created_at DESC').per(3)
       else
-        @audio = Audio.all
+        @audio = Audio.order('created_at DESC').page(page).per(PER_PAGE)
       end
-      render json: @audio
+      render json: {
+          audios: @audio,
+          currentPage: @audio.current_page,
+          totalPages: @audio.total_pages,
+          totalCount: @audio.total_count,
+          perPage: @audio.limit_value
+      }
     end
 
     def show
