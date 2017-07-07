@@ -9,6 +9,7 @@ Rails.application.routes.draw do
         end
       end
       resources :users, only: [:create, :index, :get]
+      resources :contributors, only: [:create, :index]
     end
   end
 

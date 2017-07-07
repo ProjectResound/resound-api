@@ -45,11 +45,44 @@ describe Api::V1::AudiosController do
                                           flowTotalChunks: 2,
                                           flowIdentifier: '123-lalala1',
                                           flowFilename: filename,
-                                          title: 'lalad'}
+                                          title: 'lalad',
+                                          contributor: 'ben stein'}
         }.to have_enqueued_job(AudioProcessing)
 
         audio = Audio.by_filename(filename).first
         expect(audio.filename).to eq(filename)
+        expect(audio.contributors).to eq('ben stein')
+      end
+
+      it 'updates the non-unique fields' do
+        allow(File).to receive(:size)
+        allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
+
+        changed_contributor = 'ben stein'
+        changed_title = 'lalad'
+
+        post AUDIO_API_ENDPOINT, params: {file: file,
+                                          flowTotalChunks: 2,
+                                          flowIdentifier: '123-lalala1',
+                                          flowFilename: filename,
+                                          title: 'title',
+                                          contributor: 'contributor'}
+
+        expect {
+          post AUDIO_API_ENDPOINT, params: {file: file,
+                                            flowTotalChunks: 2,
+                                            flowIdentifier: '123-lalala1',
+                                            flowFilename: filename,
+                                            title: changed_title,
+                                            contributor: changed_contributor}
+        }.to have_enqueued_job(AudioProcessing)
+
+        audio = Audio.by_filename(filename).first
+        expect(audio.title).to eq(changed_title)
+        expect(audio.contributors).to eq(changed_contributor)
+
       end
     end
   end

@@ -23,7 +23,8 @@ class AudioProcessing < ActiveJob::Base
                                      {
                                        audio_id: audio.id,
                                        status: 'success',
-                                       filename: opts[:filename]
+                                       filename: opts[:filename],
+                                       contributor: opts[:contributor]
                                      }
       else
         ActionCable.server.broadcast 'FilesChannel',

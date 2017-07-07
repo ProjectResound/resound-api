@@ -31,19 +31,19 @@ module Api::V1
     def create
       save_file!
       if last_chunk?
-        Audio.update_or_create_by_filename(
-                 filename: params[:flowFilename],
-                 contributor: params[:contributor],
-                 title: params[:title],
-                 tags: params[:tags],
-                 uploader: @current_user
-        )
+        contributors = Contributor.parse_and_process(params[:contributor])
+        audio = Audio.find_or_create_by(filename: params[:flowFilename])
+        audio.title = params[:title]
+        audio.contributors = contributors
+        audio.tags = params[:tags]
+        audio.uploader = @current_user
+        audio.save!
 
         AudioProcessing.perform_later(
             { identifier: params[:flowIdentifier],
               filename: params[:flowFilename],
               title: params[:title],
-              contributor: params[:contributor] }
+              contributor: contributors }
         )
       end
       render status: :ok
