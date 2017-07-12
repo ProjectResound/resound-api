@@ -30,7 +30,7 @@ gem 'resque_solo', '~> 0.3.0'
 gem 'scenic', '~> 1.4.0'
 gem 'textacular', '~> 4.0.1'
 gem 'jwt', '~> 1.5.6'
-gem 'acts_as_paranoid', git: 'git@github.com:shanebonham/acts_as_paranoid.git'
+gem 'acts_as_paranoid', github: 'shanebonham/acts_as_paranoid', branch: 'master'
 gem 'kaminari', '~> 0.14.1'
 
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.

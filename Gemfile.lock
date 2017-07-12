@@ -1,4 +1,13 @@
 GIT
+  remote: git://github.com/shanebonham/acts_as_paranoid.git
+  revision: 0d4af4e0b1bc7035a0b6be87237986ffbf6b3843
+  branch: master
+  specs:
+    acts_as_paranoid (1.0.0.beta)
+      activerecord (>= 4.2, < 6.0)
+      activesupport (>= 4.2, < 6.0)
+
+GIT
   remote: git://github.com/sinatra/sinatra.git
   revision: d0c4053fd459be9f2c207cfeec5c0606461c014b
   branch: master
@@ -10,14 +19,6 @@ GIT
       rack (~> 2.0)
       rack-protection (= 2.0.0.rc1)
       tilt (~> 2.0)
-
-GIT
-  remote: git@github.com:shanebonham/acts_as_paranoid.git
-  revision: 0d4af4e0b1bc7035a0b6be87237986ffbf6b3843
-  specs:
-    acts_as_paranoid (1.0.0.beta)
-      activerecord (>= 4.2, < 6.0)
-      activesupport (>= 4.2, < 6.0)
 
 GEM
   remote: https://rubygems.org/
