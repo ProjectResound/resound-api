@@ -9,18 +9,18 @@ module Api::V1
     def index
       page = params[:page] || 1
       if params[:filename]
-        @audio = Audio.by_filename(params[:filename]).page(1).per(1)
+        audio = Audio.by_filename(params[:filename]).page(1).per(1)
       elsif params[:working_on] == 'true'
-        @audio = Audio.where(uploader_id: @current_user.id).page(1).order('created_at DESC').per(3)
+        audio = Audio.where(uploader_id: @current_user.id).page(1).order('created_at DESC').per(3)
       else
-        @audio = Audio.order('created_at DESC').page(page).per(PER_PAGE)
+        audio = Audio.order('created_at DESC').page(page).per(PER_PAGE)
       end
       render json: {
-          audios: @audio,
-          currentPage: @audio.current_page,
-          totalPages: @audio.total_pages,
-          totalCount: @audio.total_count,
-          perPage: @audio.limit_value
+          audios: audio,
+          currentPage: audio.current_page,
+          totalPages: audio.total_pages,
+          totalCount: audio.total_count,
+          perPage: audio.limit_value
       }
     end
 
@@ -51,7 +51,13 @@ module Api::V1
 
     def search
       results = AudioSearchEngine.search(params[:q])
-      render json: results
+      render json: {
+          audios: results,
+          currentPage: 1,
+          totalPages: 1,
+          totalCount: results.size,
+          perPage: 100
+      }
     end
 
     private
