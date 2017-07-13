@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/shanebonham/acts_as_paranoid.git
+  remote: https://github.com/shanebonham/acts_as_paranoid
   revision: 0d4af4e0b1bc7035a0b6be87237986ffbf6b3843
   branch: master
   specs:
@@ -8,16 +8,16 @@ GIT
       activesupport (>= 4.2, < 6.0)
 
 GIT
-  remote: git://github.com/sinatra/sinatra.git
-  revision: d0c4053fd459be9f2c207cfeec5c0606461c014b
+  remote: https://github.com/sinatra/sinatra
+  revision: b8935900461766894c70f4c768a514bb868f391b
   branch: master
   specs:
-    rack-protection (2.0.0.rc1)
+    rack-protection (2.0.0)
       rack
-    sinatra (2.0.0.rc1)
-      mustermann (= 1.0.0)
+    sinatra (2.0.0)
+      mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.0.rc1)
+      rack-protection (= 2.0.0)
       tilt (~> 2.0)
 
 GEM
@@ -225,7 +225,7 @@ GEM
       activerecord (>= 3.0, < 5.1)
     thor (0.19.1)
     thread_safe (0.3.5)
-    tilt (2.0.6)
+    tilt (2.0.7)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     vegas (0.1.11)
@@ -266,5 +266,8 @@ DEPENDENCIES
   textacular (~> 4.0.1)
   tzinfo-data
 
+RUBY VERSION
+   ruby 2.3.3p222
+
 BUNDLED WITH
-   1.13.3
+   1.15.1
