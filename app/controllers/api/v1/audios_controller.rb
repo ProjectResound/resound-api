@@ -25,7 +25,11 @@ module Api::V1
     end
 
     def show
-      render json: @audio
+      if @audio
+        render json: @audio
+      else
+        render status: :not_found
+      end
     end
 
     def create
@@ -63,7 +67,7 @@ module Api::V1
     private
 
     def find_audio
-      @audio = Audio.find(params[:id])
+      @audio = Audio.find_by_id(params[:id])
     end
 
     def save_file!

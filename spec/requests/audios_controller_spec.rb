@@ -145,6 +145,32 @@ describe Api::V1::AudiosController do
     end
   end
 
+  describe 'SHOW' do
+    before(:each) do
+      @audio = Audio.create(
+                        title: 'no hiking for me',
+                        filename: 'filename233.wav',
+                        uploader: @uploader
+      )
+    end
+
+    it 'returns an audio object if one is found' do
+      get "#{AUDIO_API_ENDPOINT}#{@audio.id}"
+
+      expect(response.status).to eq 200
+      expect(json['title']).to eq(@audio.title)
+      expect(json['id']).to eq(@audio.id)
+    end
+
+    it 'returns a 404 if not found' do
+      get "#{AUDIO_API_ENDPOINT}#{@audio.id + 99}"
+
+      expect(response.status).to eq 404
+    end
+
+  end
+
+
   describe 'SEARCH' do
     before(:each) do
       Audio.create(
