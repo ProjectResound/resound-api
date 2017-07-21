@@ -87,7 +87,7 @@ describe Api::V1::AudiosController do
     end
   end
 
-  describe 'GET' do
+  describe 'INDEX' do
     context 'when unauthorized' do
       it 'returns 401', skip_auth: true do
         get AUDIO_API_ENDPOINT, params: {filename: 'something'}
