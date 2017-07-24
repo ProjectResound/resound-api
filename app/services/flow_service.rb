@@ -40,6 +40,7 @@ class FlowService
 
   def clean
     FileUtils.rm_rf chunk_file_directory
+    FileUtils.remove final_file_path
     true
   end
 

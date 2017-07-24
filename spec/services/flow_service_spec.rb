@@ -8,6 +8,7 @@ describe FlowService do
 
   describe 'clean' do
     it 'is successful' do
+      allow(FileUtils).to receive(:remove).and_return(true)
       expect(subject.clean).to be_truthy
     end
   end
