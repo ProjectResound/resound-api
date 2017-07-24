@@ -160,6 +160,7 @@ describe Api::V1::AudiosController do
       expect(response.status).to eq 200
       expect(json['title']).to eq(@audio.title)
       expect(json['id']).to eq(@audio.id)
+      expect(json['uploader']).to eq(@uploader.nickname)
     end
 
     it 'returns a 404 if not found' do
