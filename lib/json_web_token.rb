@@ -14,10 +14,11 @@ class JsonWebToken
   end
 
   def self.jwks_hash
-    Rails.cache.fetch(JWKS_CACHE_KEY, expires_in: 1.day) do
+    jwks_keys = Rails.cache.fetch(JWKS_CACHE_KEY, expires_in: 1.day) do
       jwks_raw = Net::HTTP.get URI("https://#{Rails.application.secrets.auth0_domain}/.well-known/jwks.json")
-      jwks_keys = Array(JSON.parse(jwks_raw)['keys'])
-      return Hash[
+      Array(JSON.parse(jwks_raw)['keys'])
+    end
+    Hash[
           jwks_keys
               .map do |k|
             [
@@ -29,5 +30,4 @@ class JsonWebToken
           end
       ]
     end
-  end
 end
