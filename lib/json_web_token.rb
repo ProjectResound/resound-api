@@ -29,5 +29,5 @@ class JsonWebToken
             ]
           end
       ]
-    end
+  end
 end

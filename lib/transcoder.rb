@@ -1,35 +1,45 @@
 class Transcoder
   require 'open3'
+  require 'streamio-ffmpeg'
 
-  def initialize
-    @binary_path = Rails.application.config.store_manage[:ffmpeg_path]
+  FLAC = 'flac'
+  MP3_128 = '128-mp3'
+  HE_AAC = 'he-aac'
+
+  def initialize(file:, title:, contributor:)
+    unless File.exists?(file)
+      raise StandardError, "File does not exist: #{file}"
+    end
+
+    @file = FFMPEG::Movie.new(file)
+    @title = title
+    @contributor = contributor
+    FFMPEG.ffmpeg_binary = Rails.application.config.store_manage[:ffmpeg_path]
   end
 
   def logger
     Rails.logger
   end
 
-  def to_flac(file:, output_file:, title:, contributor:)
-    unless @binary_path
-      raise StandardError, "No valid binary_path", caller
+  def transcode(output:, format:)
+    encoding_options = {}
+    case format
+      when HE_AAC
+        encoding_options.merge!({
+                                  audio_codec: 'libfdk_aac',
+                                  audio_bitrate: '48'
+                                })
+      when MP3_128
+        encoding_options.merge!({
+                                  audio_codec: 'libmp3lame',
+                                  audio_bitrate: '128'
+                                })
     end
-    unless File.exists?(file)
-      raise StandardError, "File does not exist: #{file}"
-    end
-
-    cmd = "#{@binary_path} -y -i '#{file}' -metadata title=\"#{title}\"" +
-        " -metadata artist=\"#{contributor}\" '#{output_file}'"
-
-    stdout, stderr, exit_status = Open3.capture3(cmd)
-    if duration_line = stderr.scan(/Duration\:\s([^,]*?),/).last
-      duration = duration_line.first
-    end
-
-    if !exit_status.success?
-      logger.error(stderr)
-      raise StandardError, "Unsuccessful command: #{cmd}"
-    end
-
-    return duration
+    encoding_options.merge!({custom:  %W(-metadata title=#{@title} -metadata artist=#{@contributor})
+                            })
+    @file.transcode(output, encoding_options)
+    @file.duration
   end
+
+
 end

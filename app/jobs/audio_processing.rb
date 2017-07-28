@@ -1,5 +1,4 @@
 class AudioProcessing < ActiveJob::Base
-  require 'duration_parser'
   include Resque::Plugins::UniqueJob
 
   @queue = :medium
@@ -15,8 +14,12 @@ class AudioProcessing < ActiveJob::Base
       flow_service.combine_files
       transcoded = flow_service.transcode_file
       if audio = Audio.find_by_filename(opts[:filename])
-        audio.file = File.open(transcoded[:final_flac_path])
-        audio.duration = DurationParser.to_seconds(transcoded[:duration])
+        audio.file = {
+          flac: File.open(transcoded[:final_flac_path]),
+          he_aac: File.open(transcoded[:he_aac_file_path]),
+          mp3_128: File.open(transcoded[:mp3_file_path])
+        }
+        audio.duration = transcoded[:duration]
         audio.save
         flow_service.clean
         ActionCable.server.broadcast 'FilesChannel',

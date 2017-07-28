@@ -14,14 +14,29 @@ class FlowService
   end
 
   def transcode_file
-    transcoder = Transcoder.new()
-    duration = transcoder.to_flac(
+    transcoder = Transcoder.new(
         file: final_file_path,
-        output_file: final_flac_path,
         title: @title,
         contributor: @contributor
     )
-    return { final_flac_path: final_flac_path, duration: duration }
+    duration = transcoder.transcode(
+        output: final_flac_path,
+        format: Transcoder::FLAC
+    )
+    transcoder.transcode(
+        output: mp3_file_path,
+        format: Transcoder::MP3_128
+    )
+    transcoder.transcode(
+        output: he_aac_file_path,
+        format: Transcoder::HE_AAC
+    )
+    {
+        final_flac_path: final_flac_path,
+        he_aac_file_path: he_aac_file_path,
+        mp3_file_path: mp3_file_path,
+        duration: duration
+    }
   end
 
   def combine_files
@@ -55,11 +70,19 @@ class FlowService
     end
 
     def final_file_path
-      File.join final_file_directory, @filename
+      File.join final_file_directory, File.basename(@filename, File.extname(@filename))
     end
 
     def final_flac_path
       "#{final_file_path}.flac"
+    end
+
+    def mp3_file_path
+      "#{final_file_path}.128k.mp3"
+    end
+
+    def he_aac_file_path
+      "#{final_file_path}.he-aac.m4a"
     end
 
     def final_file_directory

@@ -221,6 +221,8 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    streamio-ffmpeg (3.0.2)
+      multi_json (~> 1.8)
     textacular (4.0.1)
       activerecord (>= 3.0, < 5.1)
     thor (0.19.1)
@@ -263,6 +265,7 @@ DEPENDENCIES
   sinatra!
   spring
   spring-watcher-listen (~> 2.0.0)
+  streamio-ffmpeg (~> 3.0)
   textacular (~> 4.0.1)
   tzinfo-data
 
