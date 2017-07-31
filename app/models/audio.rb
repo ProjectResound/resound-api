@@ -11,4 +11,11 @@ class Audio < ApplicationRecord
   def self.by_filename(filename)
     where(filename: filename)
   end
+
+  def update_metadata
+    # TODO:
+    # 1. download all files associated w/ this audio
+    # 2. re-encode with new metadata
+    # 3. replace old files with new files
+  end
 end

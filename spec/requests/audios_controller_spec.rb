@@ -171,6 +171,26 @@ describe Api::V1::AudiosController do
 
   end
 
+  describe 'UPDATE' do
+    before(:each) do
+      @audio = Audio.create(
+          title: 'no hiking for me',
+          filename: 'filename233.wav',
+          uploader: @uploader
+      )
+    end
+
+    it 'updates appropriate field' do
+      new_title = 'fee fie foe fum'
+      put "#{AUDIO_API_ENDPOINT}#{@audio.id}", params: { title: new_title}.to_json
+      expect(json['title']).to eq(new_title)
+    end
+    
+    it 'returns a 404 if audio not found' do
+      put "#{AUDIO_API_ENDPOINT}#{@audio.id + 99}", params: { title: 'new title here'}
+      expect(response.status).to eq 404
+    end
+  end
 
   describe 'SEARCH' do
     before(:each) do

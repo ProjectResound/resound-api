@@ -2,7 +2,7 @@ module Api::V1
   class AudiosController < BaseController
     include Secured
 
-    before_action :find_audio, only: [:show]
+    before_action :find_audio, only: [:show, :update]
 
     PER_PAGE = Rails.env.production? ? 25 : 10
 
@@ -51,6 +51,20 @@ module Api::V1
         )
       end
       render status: :ok
+    end
+
+    def update
+      if @audio && request.body
+        payload = JSON.parse(request.body.read)
+        @audio.title = payload['title'] if payload['title']
+        @audio.contributors = payload['contributors'] if payload['contributors']
+        @audio.tags = payload['tags'] if payload['tags']
+        @audio.save!
+        @audio.update_metadata()
+        render json: @audio
+      else
+        render status: :not_found
+      end
     end
 
     def search
