@@ -46,7 +46,7 @@ describe Api::V1::AudiosController do
                                           flowIdentifier: '123-lalala1',
                                           flowFilename: filename,
                                           title: 'lalad',
-                                          contributor: 'ben stein'}
+                                          contributors: 'ben stein'}
         }.to have_enqueued_job(AudioProcessing)
 
         audio = Audio.by_filename(filename).first
@@ -68,7 +68,7 @@ describe Api::V1::AudiosController do
                                           flowIdentifier: '123-lalala1',
                                           flowFilename: filename,
                                           title: 'title',
-                                          contributor: 'contributor'}
+                                          contributors: 'contributor'}
 
         expect {
           post AUDIO_API_ENDPOINT, params: {file: file,
@@ -76,7 +76,7 @@ describe Api::V1::AudiosController do
                                             flowIdentifier: '123-lalala1',
                                             flowFilename: filename,
                                             title: changed_title,
-                                            contributor: changed_contributor}
+                                            contributors: changed_contributor}
         }.to have_enqueued_job(AudioProcessing)
 
         audio = Audio.by_filename(filename).first
@@ -184,6 +184,12 @@ describe Api::V1::AudiosController do
       new_title = 'fee fie foe fum'
       put "#{AUDIO_API_ENDPOINT}#{@audio.id}", params: { title: new_title}.to_json
       expect(json['title']).to eq(new_title)
+    end
+
+    it 'creates new contributors' do
+      expect {
+        put "#{AUDIO_API_ENDPOINT}#{@audio.id}", params: { contributors: 'Mary Lantol, Badielin Mand'}.to_json
+      }.to change{Contributor.count}.by(2)
     end
     
     it 'returns a 404 if audio not found' do

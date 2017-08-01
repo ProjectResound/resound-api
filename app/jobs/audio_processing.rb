@@ -9,7 +9,7 @@ class AudioProcessing < ActiveJob::Base
           identifier: opts[:identifier],
           filename: opts[:filename],
           title: opts[:title],
-          contributor: opts[:contributor])
+          contributors: opts[:contributors])
 
       flow_service.combine_files
       transcoded = flow_service.transcode_file
@@ -27,7 +27,7 @@ class AudioProcessing < ActiveJob::Base
                                        audio_id: audio.id,
                                        status: 'success',
                                        filename: opts[:filename],
-                                       contributor: opts[:contributor]
+                                       contributors: opts[:contributors]
                                      }
       else
         ActionCable.server.broadcast 'FilesChannel',

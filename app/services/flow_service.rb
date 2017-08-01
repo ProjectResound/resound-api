@@ -4,13 +4,13 @@ class FlowService
   attr_reader :identifier,
               :filename,
               :title,
-              :contributor
+              :contributors
 
-  def initialize(identifier:, filename:, title:, contributor:)
+  def initialize(identifier:, filename:, title:, contributors:)
     @identifier = identifier
     @filename = filename
     @title = title
-    @contributor = contributor
+    @contributor = contributors
   end
 
   def transcode_file

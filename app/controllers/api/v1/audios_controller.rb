@@ -35,7 +35,7 @@ module Api::V1
     def create
       save_file!
       if last_chunk?
-        contributors = Contributor.parse_and_process(params[:contributor])
+        contributors = Contributor.parse_and_process(params[:contributors])
         audio = Audio.find_or_create_by(filename: params[:flowFilename])
         audio.title = params[:title]
         audio.contributors = contributors
@@ -47,7 +47,7 @@ module Api::V1
             { identifier: params[:flowIdentifier],
               filename: params[:flowFilename],
               title: params[:title],
-              contributor: contributors }
+              contributors: contributors }
         )
       end
       render status: :ok
@@ -57,7 +57,9 @@ module Api::V1
       if @audio && request.body
         payload = JSON.parse(request.body.read)
         @audio.title = payload['title'] if payload['title']
-        @audio.contributors = payload['contributors'] if payload['contributors']
+        if payload['contributors']
+          @audio.contributors = Contributor.parse_and_process(payload['contributors'])
+        end
         @audio.tags = payload['tags'] if payload['tags']
         @audio.save!
         @audio.update_metadata()
