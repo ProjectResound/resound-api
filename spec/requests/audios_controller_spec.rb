@@ -233,6 +233,32 @@ describe Api::V1::AudiosController do
       get "#{AUDIO_API_ENDPOINT}search", params: {q: @uploader.nickname}
       expect(json['audios'].size).to eq(3)
     end
+  end
 
+  describe 'DESTROY' do
+    before(:each) do
+      @audio = Audio.create(
+          title: 'one two three',
+          filename: 'filename1',
+          tags: 'planes, trains, and automobiles',
+          uploader: @uploader
+      )
+    end
+
+    it 'deletes audio file' do
+      expect {
+        delete "#{AUDIO_API_ENDPOINT}#{@audio.id}"
+      }.to change{Audio.count}.by(-1)
+
+      expect(response.status).to eq 200
+    end
+
+    it 'does not delete an unfound file' do
+      expect {
+        delete "#{AUDIO_API_ENDPOINT}#{@audio.id + 99}"
+      }.to change{Audio.count}.by(0)
+
+      expect(response.status).to eq 404
+    end
   end
 end

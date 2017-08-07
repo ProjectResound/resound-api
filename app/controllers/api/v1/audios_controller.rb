@@ -2,7 +2,7 @@ module Api::V1
   class AudiosController < BaseController
     include Secured
 
-    before_action :find_audio, only: [:show, :update]
+    before_action :find_audio, only: [:show, :update, :destroy]
 
     PER_PAGE = Rails.env.production? ? 25 : 10
 
@@ -78,6 +78,15 @@ module Api::V1
           totalCount: results.size,
           perPage: 100
       }
+    end
+
+    def destroy
+      if @audio
+        @audio.destroy
+        render status: :ok
+      else
+        render status: :not_found
+      end
     end
 
     private
