@@ -17,7 +17,8 @@ RUN apt-get install -y --force-yes \
     yasm \
     pkg-config \
     libfaac-dev \
-    libx264-dev
+    libx264-dev \
+    libmp3lame-dev
 
 # Build and install FFMPEG
 RUN mkdir ffmpeg_extracted && \
@@ -38,6 +39,7 @@ RUN mkdir ffmpeg_extracted && \
     --enable-shared \
     --enable-pthreads \
     --enable-libfdk-aac \
+    --enable-libmp3lame \
     --enable-nonfree && \
     make && \
     make install && \
