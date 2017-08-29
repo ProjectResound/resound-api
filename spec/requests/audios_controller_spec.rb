@@ -85,16 +85,17 @@ describe Api::V1::AudiosController do
 
       end
 
-      fit "updates existing audio's filename instead of creating a new audio" do
+      it "updates existing audio's filename instead of creating a new audio" do
         allow(File).to receive(:size)
         allow(File).to receive(:exists?).and_return(true)
         allow(File).to receive(:open).and_call_original
         allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
 
-        originalFilename = 'filename233.wav'
+        og_filename = 'originalfile.wav'
+        new_filename = 'new_filename.wav'
         audio = Audio.create(
             title: 'no hiking for me',
-            filename: originalFilename,
+            filename: og_filename,
             uploader: @uploader
         )
 
@@ -102,14 +103,14 @@ describe Api::V1::AudiosController do
           post AUDIO_API_ENDPOINT, params: {file: file,
                                           flowTotalChunks: 2,
                                           flowIdentifier: '123-lalala1',
-                                          flowFilename: filename,
+                                          flowFilename: new_filename,
                                           title: 'title',
                                           contributors: 'contributor',
-                                          originalFilename: originalFilename
+                                          originalFilename: og_filename
                                           }
         }.not_to change{Audio.count}
-
-        expect(audio.filename).to eq(filename)
+        audio.reload
+        expect(audio.filename).to eq(new_filename)
       end
 
     end
