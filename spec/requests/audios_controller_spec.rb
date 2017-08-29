@@ -28,6 +28,12 @@ describe Api::V1::AudiosController do
     end
 
     context 'when a last chunk is received' do
+      before(:each) do
+        allow(File).to receive(:size)
+        allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:open).and_call_original
+        allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
+      end
       ActiveJob::Base.queue_adapter = :test
       test_file = 'test.wav'
       file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
@@ -35,11 +41,6 @@ describe Api::V1::AudiosController do
       filename = 'lalala.wav'
 
       it 'enqueues a job and creates a new audio object' do
-        allow(File).to receive(:size)
-        allow(File).to receive(:exists?).and_return(true)
-        allow(File).to receive(:open).and_call_original
-        allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
-
         expect {
         post AUDIO_API_ENDPOINT, params: {file: file,
                                           flowTotalChunks: 2,
@@ -55,11 +56,6 @@ describe Api::V1::AudiosController do
       end
 
       it 'updates the non-unique fields' do
-        allow(File).to receive(:size)
-        allow(File).to receive(:exists?).and_return(true)
-        allow(File).to receive(:open).and_call_original
-        allow(File).to receive(:open).with('tmp/final/lalala.wav.flac')
-
         changed_contributor = 'ben stein'
         changed_title = 'lalad'
 
@@ -84,6 +80,30 @@ describe Api::V1::AudiosController do
         expect(audio.contributors).to eq(changed_contributor)
 
       end
+
+      it "updates existing audio's filename instead of creating a new audio" do
+        og_filename = 'originalfile.wav'
+        new_filename = 'new_filename.wav'
+        audio = Audio.create(
+            title: 'no hiking for me',
+            filename: og_filename,
+            uploader: @uploader
+        )
+
+        expect{
+          post AUDIO_API_ENDPOINT, params: {file: file,
+                                          flowTotalChunks: 2,
+                                          flowIdentifier: '123-lalala1',
+                                          flowFilename: new_filename,
+                                          title: 'title',
+                                          contributors: 'contributor',
+                                          originalFilename: og_filename
+                                          }
+        }.not_to change{Audio.count}
+        audio.reload
+        expect(audio.filename).to eq(new_filename)
+      end
+
     end
   end
 

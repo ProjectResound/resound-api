@@ -36,12 +36,19 @@ module Api::V1
       save_file!
       if last_chunk?
         contributors = Contributor.parse_and_process(params[:contributors])
-        audio = Audio.find_or_create_by(filename: params[:flowFilename])
+        filename = params[:originalFilename] || params[:flowFilename]
+        audio = Audio.find_or_create_by(filename: filename)
         audio.title = params[:title]
         audio.contributors = contributors
         audio.tags = params[:tags]
         audio.uploader = @current_user
         audio.save!
+
+        # Note(lyang): When replacing an existing file with a differently named file,
+        # we need to update the :filename primary key.
+        if params[:originalFilename]
+          audio.update_columns(filename: params[:flowFilename])
+        end
 
         AudioProcessing.perform_later(
             { identifier: params[:flowIdentifier],
