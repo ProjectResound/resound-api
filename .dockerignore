@@ -1,3 +1,4 @@
 tmp/final/**/*
 tmp/flow/**/*
+tmp/cache/**/*
 public/uploads/**/*
