@@ -21,6 +21,7 @@ test:
 
 production:
   <<: *default
-  database: resound
-  username: postgres
-
+  database: <%= ENV['DB_NAME'] %>
+  username: <%= ENV['DB_USER'] %>
+  password: <%= ENV['DB_PW'] %>
+  host: <%= ENV['DB_HOST'] %>
