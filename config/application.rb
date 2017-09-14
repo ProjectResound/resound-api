@@ -29,8 +29,8 @@ module UploadApi
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
-        resource '/api/*', :headers => :any, :methods => [:get, :post, :options, :put, :patch, :delete]
+        origins ENV['RESOUND_URL']
+        resource '/cable|api/*', :headers => :any, :methods => [:get, :post, :options, :put, :patch, :delete]
       end
     end
 

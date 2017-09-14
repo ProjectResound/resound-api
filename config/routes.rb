@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   end
 
   mount Resque::Server.new, at: '/resque'
-
   mount ActionCable.server => '/cable'
+
+  root to: 'errors#not_found'
 end
