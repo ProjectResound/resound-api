@@ -16,5 +16,9 @@ Rails.application.routes.draw do
   mount Resque::Server.new, at: '/resque'
   mount ActionCable.server => '/cable'
 
+  # Requests to /api that don't match any of the routes above should return a 200 for health checks.
+  get :api, to: proc { [200, {}, ['']] }
+
+  # Anything else, 404
   root to: 'errors#not_found'
 end
