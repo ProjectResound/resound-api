@@ -41,7 +41,7 @@ class AudioProcessing < ActiveJob::Base
         ActionCable.server.broadcast 'FilesChannel',
                                      {
                                          status: 'failed',
-                                         trace: "Could not find audio id: #{audio.id}",
+                                         trace: "Could not find audio: #{opts[:filename]}",
                                          filename: opts[:filename]
                                      }
       end
