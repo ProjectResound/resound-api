@@ -46,7 +46,7 @@ module Api::V1
 
         # Note(lyang): When replacing an existing file with a differently named file,
         # we need to update the :filename primary key.
-        if params[:originalFilename]
+        if params[:originalFilename] && (params[:originalFilename] != params[:flowFilename])
           audio.update_columns(filename: params[:flowFilename])
         end
 
