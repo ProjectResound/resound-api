@@ -38,6 +38,7 @@ gem 'foreman', '~> 0.84.0'
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.
 gem 'aws-sdk', '~> 2.1'
 gem 'streamio-ffmpeg', '~> 3.0'
+gem 'honeybadger', '~> 3.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
