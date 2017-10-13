@@ -6,8 +6,7 @@ class User < ApplicationRecord
   acts_as_paranoid
 
   has_many :audios,
-           foreign_key: 'uploader_id',
-           dependent: :destroy
+           foreign_key: 'uploader_id'
 
   self.primary_key = 'uid'
 

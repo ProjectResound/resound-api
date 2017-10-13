@@ -4,7 +4,7 @@ RSpec.describe User, type: :model do
   context "destroy()" do
     it "does not destroy user's Audio" do
       user = User.create(uid: 'userid', nickname: 'nickname')
-      audio = Audio.create(title: 'hello world', uploader: user)
+      Audio.create!(title: 'hello world', uploader: user, filename: 'woohoo boohoo')
 
       expect {
         user.destroy
@@ -12,7 +12,7 @@ RSpec.describe User, type: :model do
     end
 
     it "does not return the deleted user" do
-      user = User.create(uid: 'userid', nickname: 'nickname')
+      user = User.create!(uid: 'userid', nickname: 'nickname')
 
       expect {
         user.destroy
