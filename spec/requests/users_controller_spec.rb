@@ -21,6 +21,19 @@ describe Api::V1::UsersController do
       end
     end
 
+    context 'no nickname' do
+      it 'returns an error' do
+        uid = 'auth0|someId123123'
+        allow(JWT).to receive(:decode).and_return([{'sub' => uid}])
+
+        expect {
+          post USERS_API_ENDPOINT, params: { idToken: 'idtoken'}.to_json
+        }.to raise_error(RuntimeError)
+
+        expect(User.find_by_uid(uid)).to be_nil
+      end
+    end
+
     context 'a returning user' do
       it 'does not create a new user' do
         nickname = 'jamie.bond'
