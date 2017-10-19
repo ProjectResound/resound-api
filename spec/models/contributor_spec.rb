@@ -22,11 +22,12 @@ RSpec.describe Contributor, type: :model do
 
     it "can deal with duplicates" do
       contributors = nil
-      Contributor.create(name: 'Agatha Christie')
+      the_frame = 'the frame'
+      Contributor.parse_and_process(the_frame)
       expect {
-        contributors = Contributor.parse_and_process('agatha christie')
+        contributors = Contributor.parse_and_process('the Frame')
       }.to change{ Contributor.count }.by(0)
-      expect(contributors).to eq('agatha christie')
+      expect(contributors).to eq(the_frame)
     end
   end
 end
