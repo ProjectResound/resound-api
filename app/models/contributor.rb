@@ -12,7 +12,7 @@ class Contributor < ApplicationRecord
     contributors_str = ''
     contributors_arr.each_with_index do |contributor, i|
       contributor.strip!
-      contributor_obj = Contributor.find_or_create_by(name: contributor)
+      contributor_obj = Contributor.find_or_create_by(name: contributor.downcase)
       if i == contributors_arr.size - 1
         contributors_str += contributor_obj.name
       else
