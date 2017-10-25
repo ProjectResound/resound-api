@@ -14,6 +14,9 @@ module Secured
       @current_user = Rails.cache.read(cache_key(uid))
       if !@current_user
         @current_user = User.find_by_uid(uid)
+        if !@current_user
+          raise JWT::VerificationError
+        end
         Rails.cache.write(cache_key(uid), @current_user, expires_in: 3.minutes)
       end
     end

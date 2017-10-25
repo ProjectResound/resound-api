@@ -13,7 +13,7 @@ describe Api::V1::AudiosController do
   end
 
   describe 'CREATE' do
-    context 'when a non-last chunk is received' do
+    context 'a non-last chunk is received' do
       it 'does not combine all the chunks' do
         test_file = 'test.wav'
         file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
@@ -27,7 +27,7 @@ describe Api::V1::AudiosController do
       end
     end
 
-    context 'when a last chunk is received' do
+    context 'a last chunk is received' do
       before(:each) do
         allow(File).to receive(:size)
         allow(File).to receive(:exists?).and_return(true)
@@ -108,13 +108,13 @@ describe Api::V1::AudiosController do
   end
 
   describe 'INDEX' do
-    context 'when unauthorized' do
+    context 'unauthorized' do
       it 'returns 401', skip_auth: true do
         get AUDIO_API_ENDPOINT, params: {filename: 'something'}
         expect(response.status).to eq(401)
       end
     end
-    context 'when it matches an object' do
+    context 'it matches an object' do
       it 'returns an audio object' do
         title = 'title mcTitle'
         audio = Audio.create(
@@ -128,7 +128,7 @@ describe Api::V1::AudiosController do
         expect(json['audios'][0]['title']).to eq(title)
       end
     end
-    context 'when there is no object' do
+    context 'there is no object' do
       audio = Audio.new()
       it 'returns nothing' do
         get AUDIO_API_ENDPOINT, params: {filename: audio.filename}
@@ -137,7 +137,7 @@ describe Api::V1::AudiosController do
         expect(json['totalPages']).to eq 0
       end
     end
-    context 'when user_id is passed in' do
+    context 'user_id is passed in' do
       before(:each) do
         @uploader2 = User.create(uid: 'uid2', nickname: 'some other person')
       end
@@ -154,13 +154,26 @@ describe Api::V1::AudiosController do
         expect(json['totalCount']).to eq 3
       end
 
-      context 'when user has not uploaded anything' do
+      context 'user has not uploaded anything' do
         it 'returns empty array' do
           get AUDIO_API_ENDPOINT, params: {working_on: true}
 
           expect(response.status).to eq 200
           expect(json['totalCount']).to eq 0
         end
+      end
+    end
+    context 'could not find a @current_user' do
+      it 'returns unauthorized', skip_auth: true do
+        user = User.create(uid: '1u23', nickname: 'louise')
+
+        allow_any_instance_of(Api::V1::AudiosController).to receive(:auth_token).and_return(
+            {'sub' => user.uid, 'nickname' => user.nickname}
+        )
+
+        user.destroy
+        get AUDIO_API_ENDPOINT, params: {working_on: true}
+        expect(response.status).to eq(401)
       end
     end
   end
