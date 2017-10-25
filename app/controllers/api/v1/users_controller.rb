@@ -7,9 +7,7 @@ module Api::V1
       raise "Could not create a user" if profile.nil?
 
       if profile['nickname']
-          User.find_or_create_by(uid: profile['sub']) do |user|
-            user.nickname = profile['nickname']
-          end
+          User.find_or_create_by_uid(uid: profile['sub'], nickname: profile['nickname'])
           render status: :ok
       else
         raise "Could not create a user without a nickname"
