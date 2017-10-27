@@ -201,8 +201,25 @@ describe Api::V1::AudiosController do
 
       expect(response.status).to eq 404
     end
-
   end
+
+  describe 'SHOW with deleted uploader' do
+    it 'returns something for uploader even if user has been perma-deleted' do
+      louise = User.create(uid: '1234', nickname: 'louise yang')
+      audio = Audio.create(
+          title: 'no hiking for me',
+          filename: 'filename233.wav',
+          uploader: louise
+      )
+      louise.destroy_fully!
+
+      get "#{AUDIO_API_ENDPOINT}#{audio.id}"
+
+      expect(response.status).to eq 200
+      expect(json['uploader']).to_not be(nil)
+    end
+  end
+
 
   describe 'UPDATE' do
     before(:each) do
@@ -224,7 +241,7 @@ describe Api::V1::AudiosController do
         put "#{AUDIO_API_ENDPOINT}#{@audio.id}", params: { contributors: 'Mary Lantol, Badielin Mand'}.to_json
       }.to change{Contributor.count}.by(2)
     end
-    
+
     it 'returns a 404 if audio not found' do
       put "#{AUDIO_API_ENDPOINT}#{@audio.id + 99}", params: { title: 'new title here'}
       expect(response.status).to eq 404

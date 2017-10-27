@@ -13,6 +13,7 @@ class AudioSerializer < ActiveModel::Serializer
     if user = User.find_by_uid(object.uploader_id)
       return user.nickname
     end
+    return 'deleted user'
   end
 
   def files
