@@ -176,6 +176,27 @@ describe Api::V1::AudiosController do
         expect(response.status).to eq(401)
       end
     end
+    context 'by_user=true' do
+      it 'returns audio uploaded by the authenticated user' do
+        other_uploader = User.create(uid: 'asdf134', nickname: 'mario')
+        other_audio = Audio.create(title: 'dont return this', uploader: other_uploader, filename: 'itsame.wav')
+        2.times do |i|
+          Audio.create(title: "title_#{i}", uploader: @uploader, filename: "filename_#{i}.wav")
+        end
+
+        get AUDIO_API_ENDPOINT, params: {by_user: true}
+
+        expect(json['totalCount']).to eq 2
+        expect(json['audios']).not_to include(other_audio)
+      end
+
+      it 'returns empty array if authenticated did not upload anything yet' do
+        get AUDIO_API_ENDPOINT, params: {by_user: true}
+
+        expect(json['totalCount']).to eq 0
+        expect(json['audios']).to eq([])
+      end
+    end
   end
 
   describe 'SHOW' do

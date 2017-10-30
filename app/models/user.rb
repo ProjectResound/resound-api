@@ -13,7 +13,7 @@ class User < ApplicationRecord
 
   self.primary_key = 'uid'
 
-  def self.find_or_create_by_uid(uid: uid, nickname: nickname)
+  def self.find_or_create_by_uid(uid:, nickname:)
     if deleted_user = User.only_deleted.where(uid: uid).first
       deleted_user.recover
       deleted_user.nickname = nickname

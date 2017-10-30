@@ -12,6 +12,8 @@ module Api::V1
         audio = Audio.by_filename(params[:filename]).page(1).per(1)
       elsif params[:working_on] == 'true'
         audio = Audio.where(uploader_id: @current_user.id).page(1).order('created_at DESC').per(3)
+      elsif params[:by_user]
+        audio = Audio.where(uploader_id: @current_user.id).order('created_at DESC').page(page).per(PER_PAGE)
       else
         audio = Audio.order('created_at DESC').page(page).per(PER_PAGE)
       end
