@@ -1,6 +1,16 @@
 FROM scprdev/resound-ffmpeg
 MAINTAINER Louise Yang (louise.yang@scpr.org)
 
+RUN groupadd -r resound &&\
+    useradd -r -g resound -d /home/resound -s /sbin/nologin -c "Docker image user" resound
+
+ENV HOME=/home/resound
+ENV APP_HOME=/home/resound/app
+
+RUN mkdir $HOME
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
 RUN apt-get update && apt-get install -y \
     nodejs \
     --no-install-recommends && \
@@ -14,11 +24,14 @@ RUN apt-get update && apt-get install -y \
 # throw errors if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+RUN mkdir -p $APP_HOME
+WORKDIR $APP_HOME
 
-COPY Gemfile /usr/src/app/
-COPY Gemfile.lock /usr/src/app/
+COPY Gemfile $APP_HOME/
+COPY Gemfile.lock $APP_HOME/
 RUN bundle install
 
-COPY . /usr/src/app
+COPY . $APP_HOME
+
+RUN chown -R resound:resound $HOME
+USER resound

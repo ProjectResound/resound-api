@@ -13,7 +13,7 @@ module Secured
     if uid = auth_token['sub']
       @current_user = Rails.cache.read(cache_key(uid))
       if !@current_user
-        @current_user = User.find_by_uid(uid)
+        @current_user = User.find_or_create_by_uid(uid: uid, nickname: auth_token['nickname'])
         if !@current_user
           raise JWT::VerificationError
         end
