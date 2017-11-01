@@ -19,6 +19,8 @@ module Secured
         end
         Rails.cache.write(cache_key(uid), @current_user, expires_in: 3.minutes)
       end
+    else
+      render json: { errors: ['Not Authenticated'] }, status: :unauthorized
     end
   rescue JWT::VerificationError, JWT::DecodeError
     render json: { errors: ['Not Authenticated'] }, status: :unauthorized
