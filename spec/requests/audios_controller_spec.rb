@@ -168,7 +168,7 @@ describe Api::V1::AudiosController do
         user = User.create(uid: '1u23', nickname: 'louise')
 
         allow_any_instance_of(Api::V1::AudiosController).to receive(:auth_token).and_return(
-            {'sub' => user.uid, 'nickname' => user.nickname}
+            {'blub' => 1412}
         )
 
         user.destroy
