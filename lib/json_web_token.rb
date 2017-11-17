@@ -1,11 +1,13 @@
 class JsonWebToken
   JWKS_CACHE_KEY = 'jwks_hash_keys'
 
+  AUTH0_DOMAIN = "https://#{Rails.application.secrets.auth0_domain}/"
+
   def self.verify(token)
     JWT.decode(token, nil,
                true, # Verify the signature of this token
                algorithm: 'RS256',
-               iss: "https://#{Rails.application.secrets.auth0_domain}/",
+               iss: AUTH0_DOMAIN,
                verify_iss: true,
                aud: Rails.application.secrets.auth0_api_audience,
                verify_aud: true) do |header|
@@ -15,7 +17,7 @@ class JsonWebToken
 
   def self.jwks_hash
     jwks_keys = Rails.cache.fetch(JWKS_CACHE_KEY, expires_in: 1.day) do
-      jwks_raw = Net::HTTP.get URI("https://#{Rails.application.secrets.auth0_domain}/.well-known/jwks.json")
+      jwks_raw = Net::HTTP.get URI("#{AUTH0_DOMAIN}.well-known/jwks.json")
       Array(JSON.parse(jwks_raw)['keys'])
     end
     Hash[
