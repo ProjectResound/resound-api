@@ -71,7 +71,7 @@ module Api::V1
         end
         @audio.tags = payload['tags'] if payload['tags']
         @audio.save!
-        @audio.update_metadata()
+        AudioUpdating.perform_later(@audio.id)
         render json: @audio
       else
         render status: :not_found
