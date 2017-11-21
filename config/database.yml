@@ -1,14 +1,17 @@
 default: &default
-  adapter: postgresql
+  adapter: mysql2
+  port: 3306
   pool: 5
   timeout: 5000
   encoding: utf8
   locale: <%= ENV['LANG'] %>
   host: db
-  port: 5432
 
 development:
   <<: *default
+  adapter: mysql2
+  port: 3306
+  encoding: utf8
   database: resound_dev
   username: <%= ENV['whoami'] %>
   host: localhost
