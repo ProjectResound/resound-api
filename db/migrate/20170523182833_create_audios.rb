@@ -4,7 +4,7 @@ class CreateAudios < ActiveRecord::Migration[5.0]
       t.string :title, null: false
       t.string :uploader_id, null: false
       t.string :filename, null: false
-      t.string :file_data, text: true
+      t.text :file_data
       t.integer :duration
 
       t.timestamps

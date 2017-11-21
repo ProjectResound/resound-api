@@ -13,13 +13,13 @@
 ActiveRecord::Schema.define(version: 20170722203820) do
 
   create_table "audios", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "title",        null: false
-    t.string   "uploader_id",  null: false
-    t.string   "filename",     null: false
-    t.string   "file_data"
+    t.string   "title",                      null: false
+    t.string   "uploader_id",                null: false
+    t.string   "filename",                   null: false
+    t.text     "file_data",    limit: 65535
     t.integer  "duration"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.string   "tags"
     t.string   "contributors"
     t.index ["filename"], name: "index_audios_on_filename", unique: true, using: :btree
