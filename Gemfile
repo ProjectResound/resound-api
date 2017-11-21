@@ -9,7 +9,7 @@ gem 'active_model_serializers', '~> 0.10.0'
 
 gem 'pg', '~> 0.19.0'
 # Uncomment the 'scenic' gem below if you're using postgresql
-# gem 'scenic', '~> 1.4.0'
+gem 'scenic', '~> 1.4.0'
 
 # use mysql as the db
 gem 'mysql2', '~> 0.4.10'

@@ -12,33 +12,50 @@
 
 ActiveRecord::Schema.define(version: 20170722203820) do
 
-  create_table "audios", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
-    t.string   "title",                      null: false
-    t.string   "uploader_id",                null: false
-    t.string   "filename",                   null: false
-    t.text     "file_data",    limit: 65535
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "audios", force: :cascade do |t|
+    t.string   "title",        null: false
+    t.string   "uploader_id",  null: false
+    t.string   "filename",     null: false
+    t.text     "file_data"
     t.integer  "duration"
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.string   "tags"
     t.string   "contributors"
+    t.index "to_tsvector('english'::regconfig, (title)::text)", name: "index_audios_on_title", using: :gin
     t.index ["filename"], name: "index_audios_on_filename", unique: true, using: :btree
-    t.index ["title"], name: "index_audios_on_title", type: :fulltext
   end
 
-  create_table "contributors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "contributors", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_contributors_on_name", unique: true, using: :btree
   end
 
-  create_table "users", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "users", id: false, force: :cascade do |t|
     t.string   "uid",        null: false
     t.string   "nickname"
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
     t.index ["uid"], name: "index_users_on_uid", unique: true, using: :btree
   end
+
+
+  create_view "audio_search_engines",  sql_definition: <<-SQL
+      SELECT audios.id,
+      audios.title,
+      audios.filename,
+      audios.tags,
+      audios.contributors,
+      audios.duration,
+      audios.created_at,
+      users.nickname AS uploader_nickname
+     FROM (audios
+       JOIN users ON (((audios.uploader_id)::text = (users.uid)::text)));
+  SQL
 
 end
