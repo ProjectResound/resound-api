@@ -22,6 +22,13 @@ class Contributor < ApplicationRecord
     contributors_str
   end
 
+  def self.basic_search(name)
+    if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "mysql2"
+      Contributor.where("lower(name) LIKE (?)", "%#{name.downcase}%")
+    else
+      super
+    end
+  end
   private
 
   def downcase_name

@@ -3,6 +3,7 @@ SELECT
   audios.title AS title,
   audios.filename AS filename,
   audios.tags AS tags,
+  audios.contributors AS contributors,
   audios.duration as duration,
   audios.created_at as created_at,
   users.nickname AS uploader_nickname

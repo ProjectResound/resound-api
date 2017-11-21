@@ -10,10 +10,14 @@ on your docker machine.
 1. `docker pull scprdev/resound-api`
 2. `docker run -d -p 80:3000 resound-api`
 
-## Postgres Features
-If you're using postgres for the database, there is an additional script you can run
-to add full text indexing on the audio table:
-`bundle exec rake db:add_index`
+## Postgres setup
+Resound API works with Postgres out of the box.
+
+## MySQL setup
+Resound is also designed to work with a MySQL database, although it loses some of the full text search capabilities, so search may be slower.
+
+To run Resound API with the MySQL adapter, edit `database.yml` appropriately. Also comment
+out the Scenic gem `gem 'scenic', '~> 1.4.0'` from the Gemfile befure running `bundle install`
 
 ### Prerequisites
 

@@ -35,6 +35,17 @@ class Audio < ApplicationRecord
     FileUtils.rm_rf updates_file_directory
   end
 
+  def self.search(query)
+    if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "mysql2"
+      query.downcase!
+      Audio.where("lower(title) LIKE (?)", "%#{query}%").
+        or(Audio.where("lower(filename) LIKE (?)", "%#{query}%")).
+        or(Audio.where("lower(tags) LIKE (?)", "%#{query}%"))
+    else
+      super
+    end
+  end
+
   private
 
   def transcode_updates(downloaded_file)

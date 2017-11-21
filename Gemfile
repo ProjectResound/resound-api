@@ -8,6 +8,11 @@ gem 'active_model_serializers', '~> 0.10.0'
 
 
 gem 'pg', '~> 0.19.0'
+# Uncomment the 'scenic' gem below if you're using postgresql
+gem 'scenic', '~> 1.4.0'
+
+# use mysql as the db
+gem 'mysql2', '~> 0.4.10'
 
 # Use Puma as the app server
 gem 'puma', '~> 3.0'
@@ -28,7 +33,6 @@ gem 'responders', '~> 2.3.0'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra', branch: 'master'
 gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
-gem 'scenic', '~> 1.4.0'
 gem 'textacular', '~> 4.0.1'
 gem 'jwt', '~> 1.5.6'
 gem 'acts_as_paranoid', git: 'https://github.com/shanebonham/acts_as_paranoid', branch: 'master'
