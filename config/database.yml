@@ -9,7 +9,6 @@ default: &default
 
 development:
   <<: *default
-  encoding: utf8
   database: resound_dev
   username: <%= ENV['whoami'] %>
   host: localhost
