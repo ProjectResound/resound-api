@@ -1,11 +1,11 @@
 default: &default
   adapter: postgresql
+  port: 5432
   pool: 5
   timeout: 5000
   encoding: utf8
   locale: <%= ENV['LANG'] %>
   host: db
-  port: 5432
 
 development:
   <<: *default
