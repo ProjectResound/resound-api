@@ -20,6 +20,11 @@ GIT
       rack-protection (= 2.0.0)
       tilt (~> 2.0)
 
+PATH
+  remote: /Users/louise.yang/Projects/shrine-ftp
+  specs:
+    shrine-ftp (0.1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -159,6 +164,7 @@ GEM
     rb-fsevent (0.9.7)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
+    rb-readline (0.5.5)
     redis (3.3.3)
     redis-actionpack (5.0.1)
       actionpack (>= 4.0, < 6)
@@ -258,6 +264,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 5.0.0, >= 5.0.0.1)
   rails-erd (~> 1.5.2)
+  rb-readline
   redis (~> 3.0)
   redis-rails
   responders (~> 2.3.0)
@@ -266,6 +273,7 @@ DEPENDENCIES
   rspec-rails (~> 3.5)
   scenic (~> 1.4.0)
   shrine (~> 2.5.0)
+  shrine-ftp!
   sinatra!
   spring
   spring-watcher-listen (~> 2.0.0)
@@ -277,4 +285,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.16.0.pre.3
+   1.16.1

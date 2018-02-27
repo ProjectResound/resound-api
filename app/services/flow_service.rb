@@ -56,7 +56,9 @@ class FlowService
   def clean
     FileUtils.rm_rf chunk_file_directory
     [final_file_path, final_flac_path, mp3_file_path, he_aac_file_path].each do |file|
-      FileUtils.remove file
+      if File.exist?(file)
+        FileUtils.remove file
+      end
     end
     true
   end
