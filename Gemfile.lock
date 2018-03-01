@@ -20,11 +20,6 @@ GIT
       rack-protection (= 2.0.0)
       tilt (~> 2.0)
 
-PATH
-  remote: /Users/louise.yang/Projects/shrine-ftp
-  specs:
-    shrine-ftp (0.1.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -217,6 +212,7 @@ GEM
       railties (>= 4.0.0)
     shrine (2.5.0)
       down (>= 2.3.6)
+    shrine-ftp (0.1.1)
     spring (2.0.0)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -273,7 +269,7 @@ DEPENDENCIES
   rspec-rails (~> 3.5)
   scenic (~> 1.4.0)
   shrine (~> 2.5.0)
-  shrine-ftp!
+  shrine-ftp
   sinatra!
   spring
   spring-watcher-listen (~> 2.0.0)
