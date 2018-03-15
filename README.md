@@ -8,7 +8,7 @@ These instructions will get you a copy of the latest docker image and run the im
 on your docker machine.
 
 1. `docker pull scprdev/resound-api`
-2. `docker run -d -p 80:3000 resound-api`
+2. `docker run -d -it -p 80:3000 scprdev/resound-api`
 
 ## Postgres setup
 Resound API works with Postgres out of the box.
