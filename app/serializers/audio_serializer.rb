@@ -1,4 +1,5 @@
 class AudioSerializer < ActiveModel::Serializer
+  CDN_HOST = ENV["RESOUND_API_CDN"] || false
   attributes :id,
              :title,
              :filename,
@@ -21,7 +22,11 @@ class AudioSerializer < ActiveModel::Serializer
 
     h = {}
     object.file.each_pair do |format, f|
-      h[format] = f.url
+      if CDN_HOST
+        h[format] = f.url(host: CDN_HOST)
+      else
+        h[format] = f.url
+      end
     end
     h
   end
