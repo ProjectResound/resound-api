@@ -1,0 +1,35 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.3-jessie-node-browsers
+      - image: circleci/postgres:9.5-alpine
+        environment:
+          POSTGRES_DB: circle_ruby_test
+          POSTGRES_USER: ubuntu
+          POSTGRES_PW: ""
+
+    environment:
+      POSTGRES_TEST_URL: postgres://ubuntu@localhost:5432/circle_ruby_test
+      SECRET_KEY_BASE: wallawallawashington
+      ALLOWED_CORS_URL: http://localhost:8000
+    timezone:
+      America/Los_Angeles
+    steps:
+      - checkout
+      - run: bundle install
+      - run:
+          name: copy test secrets.yml
+          command: cp config/secrets.yml.example config/secrets.yml
+      - run:
+          name: copy test database.yml
+          command: cp config/database.ci.yml config/database.yml
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+      - run:
+          name: migrate db
+          command: RAILS_ENV=test bundle exec rake db:migrate
+      - run:
+          name: Run tests
+          command: rspec
