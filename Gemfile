@@ -39,6 +39,7 @@ gem 'acts_as_paranoid', git: 'https://github.com/shanebonham/acts_as_paranoid', 
 gem 'kaminari', '~> 0.14.1'
 gem 'shrine', '~> 2.5.0'
 gem 'foreman', '~> 0.84.0'
+
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.
 gem 'aws-sdk', '~> 2.1'
 gem 'streamio-ffmpeg', '~> 3.0'
