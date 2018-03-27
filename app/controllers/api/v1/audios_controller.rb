@@ -36,7 +36,7 @@ module Api::V1
 
     def create
       save_file!
-      if last_chunk?
+      if params[:flowFilename] && last_chunk?
         contributors = Contributor.parse_and_process(params[:contributors])
         filename = params[:originalFilename] || params[:flowFilename]
         audio = Audio.find_or_create_by(filename: filename)
