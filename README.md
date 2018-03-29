@@ -19,6 +19,17 @@ Resound is also designed to work with a MySQL database, although it loses some o
 To run Resound API with the MySQL adapter, edit `database.yml` appropriately. Also comment
 out the Scenic gem `gem 'scenic', '~> 1.4.0'` from the Gemfile befure running `bundle install`
 
+## Upload via FTP
+It is possible to configure `resound-api` to upload via FTP:
+1. Copy `shrine_ftp_.rb.example` to `shrine.rb` in the `config/initializers` directory
+2. Either fill in your FTP credentials in this new `shrine.rb` or pass them in as the environment variables.
+
+### Required environment variables for FTP:
+* RESOUND_FTP_HOST=ftp.somesite.com
+* RESOUND_FTP_USER=ftpusername
+* RESOUND_FTP_PASSWD=ftppassword
+* RESOUND_FTP_DIR=optional_directory
+
 ### Prerequisites
 
 [Docker](https://www.docker.com/)
