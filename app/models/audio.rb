@@ -21,15 +21,17 @@ class Audio < ApplicationRecord
 
     FileUtils.mkpath(updates_file_directory)
     downloaded_file = updates_file_path(id, 'flac')
-    open(downloaded_file, 'wb') do |write_file|
-      write_file << open(flac.url).read
+    if File.exist?(flac.url)
+      open(downloaded_file, 'wb') do |write_file|
+        write_file << open(flac.url).read
+      end
+
+      transcode_updates(downloaded_file)
+
+      file[:flac].replace(File.open(updates_file_path(File.basename(filename), 'flac')))
+      file[:he_aac].replace(File.open(updates_file_path(File.basename(filename), 'm4a')))
+      file[:mp3_128].replace(File.open(updates_file_path(File.basename(filename), 'mp3')))
     end
-
-    transcode_updates(downloaded_file)
-
-    file[:flac].replace(File.open(updates_file_path(File.basename(filename), 'flac')))
-    file[:he_aac].replace(File.open(updates_file_path(File.basename(filename), 'm4a')))
-    file[:mp3_128].replace(File.open(updates_file_path(File.basename(filename), 'mp3')))
     save
 
     FileUtils.rm_rf updates_file_directory
@@ -39,8 +41,8 @@ class Audio < ApplicationRecord
     if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "mysql2"
       query.downcase!
       Audio.where("lower(title) LIKE (?)", "%#{query}%").
-        or(Audio.where("lower(filename) LIKE (?)", "%#{query}%")).
-        or(Audio.where("lower(tags) LIKE (?)", "%#{query}%"))
+          or(Audio.where("lower(filename) LIKE (?)", "%#{query}%")).
+          or(Audio.where("lower(tags) LIKE (?)", "%#{query}%"))
     else
       super
     end

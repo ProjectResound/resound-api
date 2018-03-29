@@ -30,4 +30,4 @@
 /config/secrets.yml
 
 public/
-.yardoc/*
+/.yardoc/*

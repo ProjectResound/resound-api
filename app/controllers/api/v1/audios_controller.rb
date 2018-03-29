@@ -1,11 +1,40 @@
+# All API calls require authorization using an Authorization header from Auth0.
 module Api::V1
   class AudiosController < BaseController
     include Secured
 
     before_action :find_audio, only: [:show, :update, :destroy]
 
-    PER_PAGE = Rails.env.production? ? 25 : 10
+    PER_PAGE = 25
 
+    # Lists Audio objects.
+    #
+    # @param page [Integer] optional
+    # @param filename [String] optional
+    # @param working_on [Boolean] If true, returns the three recent Audios uploaded by the user.
+    #
+    # @return [Object] paginated object including an audios attribute that contains an array of audio.
+    # @example
+    #  GET /api/v1/audios =>
+    #   {
+    #     "audios": [
+    #         {
+    #             "id": 44,
+    #             "title": "I got food in my belly",
+    #             "uploader_id": "some_user_id",
+    #             "filename": "Kurzweil-K2000-Dual-Bass-C1.wav",
+    #             "duration": 7,
+    #             "created_at": "2018-03-20T22:29:53.272Z",
+    #             "updated_at": "2018-03-20T22:29:55.198Z",
+    #             "tags": "sound effects, what should I do",
+    #             "contributors": "louise"
+    #         },
+    #     ],
+    #     "currentPage": 1,
+    #         "totalPages": 1,
+    #         "totalCount": 1,
+    #         "perPage": 25
+    #   }
     def index
       page = params[:page] || 1
       if params[:filename]
@@ -26,6 +55,27 @@ module Api::V1
       }
     end
 
+    # Returns the audio object
+    #
+    # @param id [Integer]
+    # @return [Object] Audio object
+    # @example
+    #   GET /api/v1/audios/77 =>
+    #   {
+    #     "id": 77,
+    #         "title": "booooong",
+    #         "filename": "Kurzweil-K2000-Dual-Bass-C1.wav",
+    #         "duration": 7,
+    #         "created_at": "2018-03-20T22:29:53.272Z",
+    #         "tags": "test",
+    #         "contributors": "louise",
+    #         "uploader": "louise.yang",
+    #         "files": {
+    #           "flac": "/uploads/store/something.flac",
+    #           "he_aac": "/uploads/store/something.m4a",
+    #           "mp3_128": "/uploads/store/something.mp3"
+    #         }
+    #   }
     def show
       if @audio
         render json: @audio
@@ -34,6 +84,11 @@ module Api::V1
       end
     end
 
+    # Creates an Audio object
+    #
+    # @param title [String] audio file's title
+    # @param contributors [String] comma-separated list of contributor names
+    # @param tags [String] tags to identify this file by
     def create
       save_file!
       if params[:flowFilename] && last_chunk?
@@ -62,6 +117,16 @@ module Api::V1
       render status: :ok
     end
 
+    # Updates the audio object. Requires a HTTP PUT request.
+    # @param id [Integer] Audio ID, passed in as the resource ID in the endpoint.
+    # @param body [JSON] json object
+    # @example body JSON
+    #   {
+    #     "title": "September Frame Week Drive",
+    #     "contributors": "Updated contributor name",
+    #     "tags": "updated tags"
+    #   }
+    # @return Audio [JSON] Updated audio object, or 404 Not Found
     def update
       if @audio && request.body
         payload = JSON.parse(request.body.read)
@@ -78,6 +143,32 @@ module Api::V1
       end
     end
 
+    # Search for Audio based on any arbitrary string.
+    # @param q [String] query string
+    # @return [JSON]
+    # @example
+    #   GET /api/v1/audios/search?q=test =>
+    #   {
+    #     "audios": [
+    #         {
+    #             "id": 42,
+    #             "title": "I have the cymbal",
+    #             "filename": "a-team_con_man2.wav",
+    #             "tags": "test",
+    #             "contributors": "louise",
+    #             "duration": 13,
+    #             "created_at": "2018-03-16T23:34:50.215Z",
+    #             "uploader_nickname": "louise.yang",
+    #             "rank35972011203815407": 0.0607927,
+    #             "searchable_id": null
+    #         },
+    #         ...
+    #     ],
+    #     "currentPage": 1,
+    #     "totalPages": 1,
+    #     "totalCount": 3,
+    #     "perPage": 100
+    #   }
     def search
       results = AudioSearchEngine.search(params[:q])
       render json: {
@@ -89,6 +180,14 @@ module Api::V1
       }
     end
 
+    # DANGER, Will Robinson! Destroys the audio object including all the different transcoded versions. This will make any
+    # links to the different audio formats broken. Requires an HTTP DELETE request.
+    #
+    # @param id [Integer] Audio id
+    # @return [HTTPStatus] :ok or :not_found
+    # @example
+    #   DELETE /api/v1/audios/41 =>
+    #   200 OK
     def destroy
       if @audio
         @audio.destroy
