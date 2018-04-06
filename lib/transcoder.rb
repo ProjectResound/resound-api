@@ -32,12 +32,18 @@ class Transcoder
       when MP3_128
         encoding_options.merge!({
                                   audio_codec: 'libmp3lame',
-                                  audio_bitrate: '128'
+                                  audio_bitrate: '128',
+                                  audio_bitdepth: '16',
+                                  audio_channels: '2'
                                 })
     end
     encoding_options.merge!({custom:  %W(-metadata title=#{@title} -metadata artist=#{@contributor})
                             })
     @file.transcode(output, encoding_options)
+    @file.duration
+  end
+
+  def get_duration
     @file.duration
   end
 

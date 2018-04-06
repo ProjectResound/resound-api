@@ -84,11 +84,15 @@ module Api::V1
       end
     end
 
-    # Creates an Audio object
+    # Creates an Audio object. From Resound-Store, this method can accept a flow.js (https://github.com/flowjs/flow.js)
+    # type partial upload.
     #
     # @param title [String] audio file's title
     # @param contributors [String] comma-separated list of contributor names
     # @param tags [String] tags to identify this file by
+    # @option flowFilename [String]
+    # @option originalFilename [String]
+    # @option flowIdentifier [String]
     def create
       save_file!
       if params[:flowFilename] && last_chunk?
@@ -113,6 +117,8 @@ module Api::V1
               title: params[:title],
               contributors: contributors }
         )
+      else
+        #   TBD: Upload by skipping flow.js, should we expect form data?
       end
       render status: :ok
     end

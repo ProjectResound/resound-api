@@ -14,21 +14,22 @@ class AudioProcessing < ActiveJob::Base
       flow_service.combine_files
       transcoded = flow_service.transcode_file
       if audio = Audio.find_by_filename(opts[:filename])
-        if !audio.file
-          # This is a brand new upload
-          audio.file = {
-              flac: File.open(transcoded[:final_flac_path]),
-              he_aac: File.open(transcoded[:he_aac_file_path]),
-              mp3_128: File.open(transcoded[:mp3_file_path])
-          }
-        else
-          # We're replacing it with new audio
-          audio.file[:flac].replace(File.open(transcoded[:final_flac_path]))
-          audio.file[:he_aac].replace(File.open(transcoded[:he_aac_file_path]))
-          audio.file[:mp3_128].replace(File.open(transcoded[:mp3_file_path]))
-        end
         audio.duration = transcoded[:duration]
         audio.save
+
+        file_object = {}
+        transcoded.each_key do |key|
+          case key
+          when :final_flac_path
+            file_object[:flac] = File.open(transcoded[key])
+          when :he_aac_file_path
+            file_object[:he_aac] = File.open(transcoded[key])
+          when :mp3_file_path
+            file_object[:mp3_128] = File.open(transcoded[key])
+          end
+        end
+        audio.update(file: file_object)
+
         flow_service.clean
         ActionCable.server.broadcast 'FilesChannel',
                                      {

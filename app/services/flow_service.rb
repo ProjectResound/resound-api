@@ -13,30 +13,41 @@ class FlowService
     @contributor = contributors
   end
 
+  # If the original file is a wav, run it through transcoding process,
+  # if it's an mp3, do nothing but return the same file structure.
   def transcode_file
     transcoder = Transcoder.new(
         file: final_file_path,
         title: @title,
         contributor: @contributor
     )
-    duration = transcoder.transcode(
-        output: final_flac_path,
-        format: Transcoder::FLAC
-    )
-    transcoder.transcode(
-        output: mp3_file_path,
-        format: Transcoder::MP3_128
-    )
-    transcoder.transcode(
-        output: he_aac_file_path,
-        format: Transcoder::HE_AAC
-    )
-    {
-        final_flac_path: final_flac_path,
-        he_aac_file_path: he_aac_file_path,
-        mp3_file_path: mp3_file_path,
-        duration: duration
-    }
+    duration = transcoder.get_duration
+
+    if File.extname(@filename) == '.wav'
+      transcoder.transcode(
+          output: final_flac_path,
+          format: Transcoder::FLAC
+      )
+      transcoder.transcode(
+          output: mp3_file_path,
+          format: Transcoder::MP3_128
+      )
+      transcoder.transcode(
+          output: he_aac_file_path,
+          format: Transcoder::HE_AAC
+      )
+      {
+          final_flac_path: final_flac_path,
+          he_aac_file_path: he_aac_file_path,
+          mp3_file_path: mp3_file_path,
+          duration: duration
+      }
+    else
+      {
+          mp3_file_path: final_file_path,
+          duration: duration
+      }
+    end
   end
 
   def combine_files
