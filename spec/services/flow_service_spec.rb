@@ -19,10 +19,13 @@ describe FlowService do
       it 'skips transcoding' do
         fake_file = double()
         fake_file.stub(:duration) { 123 }
+        fake_transcoder = double()
+        fake_transcoder.stub(:get_duration) { 123 }
         mp3_filename = 'somemp3.mp3'
         transcoder = double(Transcoder)
         allow(File).to receive(:exists?).with("tmp/final/somemp3").and_return(true)
         allow(FFMPEG::Movie).to receive(:new).and_return(fake_file)
+        allow(Transcoder).to receive(:new).and_return(fake_transcoder)
         mp3_service = FlowService.new(
                                      identifier: 'mp3_id',
                                      filename: mp3_filename,
