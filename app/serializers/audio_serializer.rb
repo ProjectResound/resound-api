@@ -1,5 +1,5 @@
 class AudioSerializer < ActiveModel::Serializer
-  CDN_HOST = ENV["RESOUND_API_CDN"] || false
+  CDN_HOST = ENV["RESOUND_API_CDN"].present? || false
   attributes :id,
              :title,
              :filename,
