@@ -1,7 +1,7 @@
 Metrics/BlockLength:
   Exclude:
     - 'Rakefile'
-    - 'spec/**/*.rb'
+    - '**/*.rb'
 
 Style/MultilineBlockChain:
   Exclude:

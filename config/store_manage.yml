@@ -1,8 +1,8 @@
 production:
-  ffmpeg_path: '/usr/local/bin/ffmpeg'
+  ffmpeg_path: <%= ENV['FFMPEG_PATH'] %>
 
 development:
-  ffmpeg_path: '/usr/local/bin/ffmpeg'
+  ffmpeg_path: <%= ENV['FFMPEG_PATH'] %>
 
 test:
-  ffmpeg_path: '/usr/local/bin/ffmpeg'
+  ffmpeg_path: <%= ENV['FFMPEG_PATH'] %>

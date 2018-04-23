@@ -38,8 +38,7 @@ gem 'kaminari', '~> 0.14.1'
 gem 'responders', '~> 2.3.0'
 gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
-gem 'shrine', '~> 2.11.0'
-gem 'sinatra', git: 'https://github.com/sinatra/sinatra', branch: 'master'
+gem 'shrine', '~> 2.12.0'
 gem 'textacular', '~> 4.0.1'
 
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine
@@ -74,3 +73,6 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
+
+# Multi-tenancy
+gem 'apartment'

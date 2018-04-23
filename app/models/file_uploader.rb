@@ -17,7 +17,7 @@ class FileUploader < Shrine
         return url
       end
     end
-    if (filename = context[:metadata]) && context[:metadata]['filename']
+    if (filename = context[:metadata] && context[:metadata]['filename'])
       return "#{SecureRandom.hex(2)}_#{filename}"
     end
 
