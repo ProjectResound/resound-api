@@ -21,8 +21,8 @@ module Secured
         end
         Rails.cache.write(cache_key(uid), @current_user, expires_in: 3.minutes)
       end
-      # Multi-tenant switch. Assumes you've done a migration to add a tenant attribute on the user model.
-      Apartment::Tenant.switch!(@current_user.tenant)
+      # Multi-tenant switch. Assumes you've done a migration to add an apartment attribute on the user model.
+      Apartment::Tenant.switch!(@current_user.apartment)
     else
       render json: { errors: ['Not Authenticated'] }, status: :unauthorized
     end
