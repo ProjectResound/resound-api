@@ -1,7 +1,19 @@
 # Resound API [![CircleCI](https://circleci.com/gh/ProjectResound/resound-api.svg?style=svg)](https://circleci.com/gh/ProjectResound/resound-api)
-
 The backend that all of Resound's apps hook into. More info about the suite of apps [in the wiki](https://github.com/ProjectResound/planning/wiki)
 
+## IMPORTANT NOTE!!
+This is not a working branch. It's one example of how multi-tenancy would work using the [apartment gem](https://github.com/influitive/apartment).
+
+Multi-tenancy would be handled on the API side (this repo).  Each group or station would be a separate tenant. For example, `kpcc` and `npr`.
+
+The tenants would need to be manually created through Rails console with this:
+```
+Apartment::Tenant.create('kpcc')
+```
+
+An additional migration, [db/migrate/20180424205754_adds_apartment_to_users.rb](db/migrate/20180424205754_adds_apartment_to_users.rb), will add the `apartment` column to the `users` table.
+
+Switching of tenants will be done when a user is authenticated in [secured.rb](app/models/concerns/secured.rb)
 
 ## Getting Started
 These instructions will get you a copy of the latest docker image and run the image
