@@ -2,6 +2,7 @@ class FileUploader < Shrine
   plugin :versions
   plugin :parallelize
   plugin :default_url_options, store: {public: true}
+  plugin :determine_mime_type
 
   def generate_location(io, context)
     version = context[:version].to_s
