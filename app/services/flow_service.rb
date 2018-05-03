@@ -85,7 +85,7 @@ class FlowService
     end
 
     def final_file_path
-      File.join final_file_directory, File.basename(@filename, File.extname(@filename))
+      File.join final_file_directory, File.basename(@filename)
     end
 
     def final_flac_path
