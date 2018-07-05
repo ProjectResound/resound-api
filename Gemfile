@@ -29,15 +29,17 @@ gem 'redis-rails'
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
+
 gem 'responders', '~> 2.3.0'
 gem 'sinatra', git: 'https://github.com/sinatra/sinatra', branch: 'master'
 gem 'resque', '~> 1.27.0'
+gem 'resque-scheduler', '~> 4.3.1'
 gem 'resque_solo', '~> 0.3.0'
 gem 'textacular', '~> 4.0.1'
 gem 'jwt', '~> 1.5.6'
 gem 'acts_as_paranoid', git: 'https://github.com/shanebonham/acts_as_paranoid', branch: 'master'
 gem 'kaminari', '~> 0.14.1'
-gem 'shrine', '~> 2.5.0'
+gem 'shrine', '~> 2.11.0'
 gem 'foreman', '~> 0.84.0'
 
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.

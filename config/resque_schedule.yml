@@ -1,0 +1,3 @@
+DeleteOldFiles:
+  cron: "29 4 * * * *"
+  description: "Deletes old files in the cache that have been successfully uploaded."
