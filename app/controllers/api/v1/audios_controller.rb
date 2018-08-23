@@ -120,6 +120,7 @@ module Api::V1
       else
         #   TBD: Upload by skipping flow.js, should we expect form data?
       end
+      DeleteOldFiles.perform_later()
       render status: :ok
     end
 
