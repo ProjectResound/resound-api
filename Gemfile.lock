@@ -90,8 +90,6 @@ GEM
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
     ffi (1.9.23)
-    foreman (0.84.0)
-      thor (~> 0.19.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     honeybadger (3.3.0)
@@ -250,7 +248,6 @@ DEPENDENCIES
   aws-sdk (~> 2.1)
   byebug
   factory_girl_rails (~> 4.8.0)
-  foreman (~> 0.84.0)
   honeybadger (~> 3.1)
   jwt (~> 1.5.6)
   kaminari (~> 0.14.1)
