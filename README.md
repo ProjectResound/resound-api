@@ -10,6 +10,9 @@ on your docker machine.
 1. `docker pull scprdev/resound-api`
 2. `docker run -d -it -p 80:3000 scprdev/resound-api`
 
+## Development
+This rails app uses the [dotenv gem](https://github.com/bkeepers/dotenv). See `.env.example`
+
 ## Postgres setup
 Resound API works with Postgres out of the box.
 
