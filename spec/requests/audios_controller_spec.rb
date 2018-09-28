@@ -16,7 +16,7 @@ describe Api::V1::AudiosController do
     context 'a non-last chunk is received' do
       it 'does not combine all the chunks' do
         test_file = 'test.wav'
-        file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
+        file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', test_file), 'audio/wav')
         allow(Dir).to receive(:[]).and_return(['chunk_file_directory/lalala1.wav.part1', 'chunk_file_directory/lalala2.wav.part2'])
 
         post AUDIO_API_ENDPOINT, params: {file: file,
@@ -36,7 +36,7 @@ describe Api::V1::AudiosController do
       end
       ActiveJob::Base.queue_adapter = :test
       test_file = 'test.wav'
-      file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'requests', test_file), 'audio/wav')
+      file = Rack::Test::UploadedFile.new(Rails.root.join('spec', 'fixtures', test_file), 'audio/wav')
 
       filename = 'lalala.wav'
 
