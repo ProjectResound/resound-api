@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :audio do
-    title    { 'thank you for testing' }
-    filename { 'thanks.wav' }
+    sequence(:title)    { |n| "thank you for testing #{n}" }
+    sequence(:filename) { |n| "thanks#{n}.wav" }
     uploader { create(:user) }
   end
 end
