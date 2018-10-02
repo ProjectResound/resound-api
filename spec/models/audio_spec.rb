@@ -53,7 +53,7 @@ RSpec.describe Audio, type: :model do
         allow(File).to receive(:exist?).with(flac.url).and_return false
       end
 
-      it 'transcodes the file' do
+      it "doesn't transcode the file" do
         expect(audio).not_to receive(:transcode_updates).with("tmp/updates/#{audio.id}/#{audio.id}.flac")
 
         audio.update_metadata
@@ -68,7 +68,7 @@ RSpec.describe Audio, type: :model do
   end
 
   describe '.by_filename' do
-    it 'returns audions that matches with the filename' do
+    it 'returns audios that matches with the filename' do
       audio1 = create(:audio)
       audio2 = create(:audio, filename: 'newFilename.mp3')
 

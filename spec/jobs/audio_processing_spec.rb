@@ -131,7 +131,7 @@ describe AudioProcessing do
         }
       end
 
-      it 'broadcast a failed message to FilesChannel with excpetion information' do
+      it 'broadcast a failed message to FilesChannel with exception information' do
         allow(FlowService).to receive(:new).and_raise(error)
         allow(ActionCable).to receive(:server).and_return(server)
 
