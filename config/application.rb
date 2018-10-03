@@ -11,7 +11,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
-
+require 'apartment/elevators/first_subdomain'
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
@@ -27,9 +27,10 @@ module UploadApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    config.middleware.use Apartment::Elevators::FirstSubdomain
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins ENV['ALLOWED_CORS_URL']
+        origins ENV['ALLOWED_CORS_URLS'].split(',')
         resource '/cable|api/*', :headers => :any, :methods => [:get, :post, :options, :put, :patch, :delete]
       end
     end
