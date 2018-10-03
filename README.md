@@ -6,14 +6,13 @@ This is not a working branch. It's one example of how multi-tenancy would work u
 
 Multi-tenancy would be handled on the API side (this repo).  Each group or station would be a separate tenant. For example, `kpcc` and `npr`.
 
-The tenants would need to be manually created through Rails console with this:
-```
-Apartment::Tenant.create('kpcc')
-```
+To create the tenants, first you need to set the env variable `ALLOWED_CORS_URLS`.
+Example: `ALLOWED_CORS_URLS=http://kpcc.resound.npr.org,http://why.resound.npr.org`
 
-An additional migration, [db/migrate/20180424205754_adds_apartment_to_users.rb](db/migrate/20180424205754_adds_apartment_to_users.rb), will add the `apartment` column to the `users` table.
-
-Switching of tenants will be done when a user is authenticated in [secured.rb](app/models/concerns/secured.rb)
+Then you can run the following rake task, that will create the tenants based on the urls
+```
+rake db:create_tenants
+```
 
 ## Getting Started
 These instructions will get you a copy of the latest docker image and run the image
