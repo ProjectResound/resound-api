@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Contributor, type: :model do
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_length_of(:name).is_at_least(4) }
+
 
   describe "parse_and_process" do
     it "can parse one contributor" do

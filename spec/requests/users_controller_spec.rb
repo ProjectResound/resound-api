@@ -14,7 +14,7 @@ describe Api::V1::UsersController do
 
         expect {
           post USERS_API_ENDPOINT, params: { idToken: 'idtoken' }.to_json
-        }.to change{User.count}.by(1)
+        }.to change{ User.count }.by(1)
 
         expect(response.status).to eq 200
         expect(User.last.nickname).to eq nickname
@@ -34,19 +34,15 @@ describe Api::V1::UsersController do
       end
     end
 
-    context 'a returning user' do
+    context 'when user already exist' do
       it 'does not create a new user' do
-        nickname = 'jamie.bond'
-        uid = 'wah|123123'
+        user = FactoryBot.create(:user)
 
-        User.create(
-                   uid: uid,
-                   nickname: nickname)
-        allow(JWT).to receive(:decode).and_return([{'sub' => uid, 'nickname' => nickname}])
+        allow(JWT).to receive(:decode).and_return([{'sub' => user.uid, 'nickname' => user.nickname}])
 
         expect {
           post USERS_API_ENDPOINT, params: { idToken: 'idToken' }.to_json
-        }.to change{User.count}.by(0)
+        }.to change{ User.count }.by(0)
       end
     end
   end

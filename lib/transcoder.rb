@@ -46,6 +46,4 @@ class Transcoder
   def get_duration
     @file.duration
   end
-
-
 end

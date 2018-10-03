@@ -1,7 +1,15 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  context "destroy()" do
+  it { is_expected.to have_many(:audios).with_foreign_key('uploader_id') }
+  it { is_expected.to validate_presence_of(:nickname) }
+  it do
+    create(:user)
+
+    is_expected.to validate_uniqueness_of(:uid)
+  end
+
+  context "destroy" do
     it "does not destroy user's Audio" do
       user = User.create(uid: 'userid', nickname: 'nickname')
       Audio.create!(title: 'hello world', uploader: user, filename: 'woohoo boohoo')
