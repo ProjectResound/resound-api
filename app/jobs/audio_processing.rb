@@ -4,6 +4,7 @@ class AudioProcessing < ActiveJob::Base
   @queue = :medium
 
   def perform(opts)
+    Apartment::Tenant.switch!(opts[:tenant])
     begin
       flow_service = ::FlowService.new(
           identifier: opts[:identifier],
