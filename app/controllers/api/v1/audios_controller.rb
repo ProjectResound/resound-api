@@ -115,7 +115,8 @@ module Api::V1
             { identifier: params[:flowIdentifier],
               filename: params[:flowFilename],
               title: params[:title],
-              contributors: contributors }
+              contributors: contributors,
+              tenant: Apartment::Tenant.current }
         )
       else
         #   TBD: Upload by skipping flow.js, should we expect form data?
