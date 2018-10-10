@@ -13,12 +13,8 @@ describe 'Multi Tenancy Behaviour based on subdomains' do
     let(:end_point) { '/api/v1/contributors/' }
 
     context "using kpcc.resound.npr.org as host" do
-      before do
-        host! 'kpcc.resound.npr.org'
-      end
-
       it 'creates the contributor under kpcc tenant' do
-        post end_point, params: { name: 'new_contributor' }
+        post end_point, params: { name: 'new_contributor' }, headers: { 'X-tenant' => 'kpcc'}
 
         Apartment::Tenant.switch! 'kpcc'
         contributor = Contributor.first
@@ -32,12 +28,8 @@ describe 'Multi Tenancy Behaviour based on subdomains' do
     end
 
     context "using npr.resound.npr.org as host" do
-      before do
-        host! 'npr.resound.npr.org'
-      end
-
       it 'creates the contributor under npr tenant' do
-        post end_point, params: { name: 'new_contributor' }
+        post end_point, params: { name: 'new_contributor' }, headers: { 'X-tenant' => 'npr'}
 
         Apartment::Tenant.switch! 'npr'
         contributor = Contributor.first
@@ -61,12 +53,8 @@ describe 'Multi Tenancy Behaviour based on subdomains' do
     end
 
     context "using kpcc.resound.npr.org as host" do
-      before do
-        host! 'kpcc.resound.npr.org'
-      end
-
       it 'creates the user under kpcc tenant' do
-        post end_point, params: { idToken: 'idtoken' }.to_json
+        post end_point, params: { idToken: 'idtoken' }.to_json, headers: { 'X-tenant' => 'kpcc'}
 
         Apartment::Tenant.switch! 'kpcc'
         contributor = User.first
@@ -85,7 +73,7 @@ describe 'Multi Tenancy Behaviour based on subdomains' do
       end
 
       it 'creates the contributor under npr tenant' do
-        post end_point, params: { idToken: 'idtoken' }.to_json
+        post end_point, params: { idToken: 'idtoken' }.to_json, headers: { 'X-tenant' => 'npr'}
 
         Apartment::Tenant.switch! 'npr'
         contributor = User.first
