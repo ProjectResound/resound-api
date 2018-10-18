@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe do
   it 'returns 200' do
     get '/'

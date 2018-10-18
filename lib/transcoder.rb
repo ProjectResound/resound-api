@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+# Wrapper for FFMPEG. If you need to fiddle with transcoding options, this is
+# where to do it.
 class Transcoder
   require 'open3'
   require 'streamio-ffmpeg'
@@ -7,9 +11,7 @@ class Transcoder
   HE_AAC = 'he-aac'
 
   def initialize(file:, title:, contributor:)
-    unless File.exists?(file)
-      raise StandardError, "File does not exist: #{file}"
-    end
+    raise StandardError, "File does not exist: #{file}" unless File.exist?(file)
 
     @file = FFMPEG::Movie.new(file)
     @title = title
@@ -24,26 +26,24 @@ class Transcoder
   def transcode(output:, format:)
     encoding_options = {}
     case format
-      when HE_AAC
-        encoding_options.merge!({
-                                  audio_codec: 'libfdk_aac',
-                                  audio_bitrate: '48'
-                                })
-      when MP3_128
-        encoding_options.merge!({
-                                  audio_codec: 'libmp3lame',
-                                  audio_bitrate: '128',
-                                  audio_bitdepth: '16',
-                                  audio_channels: '2'
-                                })
+    when HE_AAC
+      encoding_options[:audio_codec] = 'libfdk_aac'
+      encoding_options[:audio_bitrate] = '48'
+    when MP3_128
+      encoding_options.merge!(
+        audio_codec: 'libmp3lame',
+        audio_bitrate: '128',
+        audio_bitdepth: '16',
+        audio_channels: '2'
+      )
     end
-    encoding_options.merge!({custom:  %W(-metadata title=#{@title} -metadata artist=#{@contributor})
-                            })
+    encoding_options[:custom] = %W[-metadata title=#{@title}
+                                   -metadata artist=#{@contributor}]
     @file.transcode(output, encoding_options)
     @file.duration
   end
 
-  def get_duration
+  def duration
     @file.duration
   end
 end

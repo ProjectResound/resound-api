@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 describe Api::V1::ContributorsController do
   API_ENDPOINT = '/api/v1/contributors/'
   let(:user) { FactoryBot.create(:user) }
 
-
   before(:each) do |example|
-    allow(Net::HTTP).to receive(:start).and_return(double())
+    allow(Net::HTTP).to receive(:start).and_return(double)
 
     unless example.metadata[:skip_auth]
-      allow_any_instance_of(Api::V1::ContributorsController).to receive(:auth_token).and_return(
-          {'sub' => user.uid, 'nickname' => user.nickname}
-      )
+      allow_any_instance_of(Api::V1::ContributorsController)
+        .to receive(:auth_token).and_return(
+          'sub' => user.uid, 'nickname' => user.nickname
+        )
     end
   end
 
@@ -18,9 +20,9 @@ describe Api::V1::ContributorsController do
       it 'does not create a new contributor and returns a 204' do
         contributor = FactoryBot.create(:contributor)
 
-        expect {
+        expect do
           post API_ENDPOINT, params: { name: contributor.name }
-        }.to_not change { Contributor.count }
+        end.to_not(change { Contributor.count })
 
         expect(response.status).to eq 204
       end
@@ -30,9 +32,9 @@ describe Api::V1::ContributorsController do
       it 'creates contributor and returns a 201' do
         name = 'hermione granger'
 
-        expect {
+        expect do
           post API_ENDPOINT, params: { name: name }
-        }.to change{ Contributor.count }.by(1)
+        end.to change { Contributor.count }.by(1)
 
         expect(response.status).to eq 201
         expect(json['name']).to eq name

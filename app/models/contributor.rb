@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Contributor < ApplicationRecord
   include ActiveModel::Serialization
   include ActiveModel::ForbiddenAttributesProtection
@@ -12,26 +14,29 @@ class Contributor < ApplicationRecord
     contributors_str = ''
     contributors_arr.each_with_index do |contributor, i|
       contributor.strip!
-      contributor_obj = Contributor.find_or_create_by(name: contributor.downcase)
-      if i == contributors_arr.size - 1
-        contributors_str += contributor_obj.name
-      else
-        contributors_str += "#{contributor_obj.name}, "
-      end
+      contributor_obj =
+        Contributor.find_or_create_by(name: contributor.downcase)
+      contributors_str += if i == contributors_arr.size - 1
+                            contributor_obj.name
+                          else
+                            "#{contributor_obj.name}, "
+                          end
     end
     contributors_str
   end
 
   def self.basic_search(name)
-    if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "mysql2"
-      Contributor.where("lower(name) LIKE (?)", "%#{name.downcase}%")
+    if ActiveRecord::Base.connection.instance_values['config'][:adapter] ==
+       'mysql2'
+      Contributor.where('lower(name) LIKE (?)', "%#{name.downcase}%")
     else
       super
     end
   end
+
   private
 
   def downcase_name
-    self.name.downcase!
+    name.downcase!
   end
 end

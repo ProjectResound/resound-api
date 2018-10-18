@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Secured
   require 'json_web_token'
   extend ActiveSupport::Concern
@@ -10,15 +12,14 @@ module Secured
   private
 
   def authenticate_request!
-    if uid = auth_token['sub']
+    if (uid = auth_token['sub'])
       @current_user = Rails.cache.read(cache_key(uid))
-      if !@current_user
+      unless @current_user
         @current_user = User.find_or_create_by(uid: uid) do |user|
           user.nickname = auth_token['nickname']
         end
-        if !@current_user
-          raise JWT::VerificationError
-        end
+        raise JWT::VerificationError unless @current_user
+
         Rails.cache.write(cache_key(uid), @current_user, expires_in: 3.minutes)
       end
     else
@@ -33,9 +34,9 @@ module Secured
   end
 
   def http_token
-    if request.headers['Authorization'].present?
-      request.headers['Authorization'].split(' ').last
-    end
+    return unless request.headers['Authorization'].present?
+
+    request.headers['Authorization'].split(' ').last
   end
 
   def auth_token

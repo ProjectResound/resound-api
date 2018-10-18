@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Requests
   module JsonHelpers
     def json
-      return if !response.body
+      return unless response.body
+
       JSON.parse(response.body)
     end
   end

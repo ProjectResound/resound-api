@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   include ActiveModel::ForbiddenAttributesProtection
   include ActiveModel::Serialization
@@ -14,12 +16,12 @@ class User < ApplicationRecord
   self.primary_key = 'uid'
 
   def self.find_or_create_by_uid(uid:, nickname:)
-    if deleted_user = User.only_deleted.where(uid: uid).first
+    if (deleted_user = User.only_deleted.where(uid: uid).first)
       deleted_user.recover
       deleted_user.nickname = nickname
       return deleted_user
     end
-    return User.create(uid: uid, nickname: nickname)
+    User.create(uid: uid, nickname: nickname)
   end
 
   private

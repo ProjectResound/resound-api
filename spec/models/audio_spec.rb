@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Audio, type: :model do
@@ -23,23 +25,29 @@ RSpec.describe Audio, type: :model do
       before do
         allow(audio).to receive(:file).and_return file_hash
         allow(File).to receive(:exist?).with(flac.url).and_return true
-        allow(audio).to receive(:open).with("tmp/updates/#{audio.id}/#{audio.id}.flac", 'wb')
-        allow(File).to receive(:open).with("tmp/updates/#{audio.id}/#{audio.filename}.flac")
-        allow(File).to receive(:open).with("tmp/updates/#{audio.id}/#{audio.filename}.m4a")
-        allow(File).to receive(:open).with("tmp/updates/#{audio.id}/#{audio.filename}.mp3")
+        allow(File).to receive(:open)
+          .with("tmp/updates/#{audio.id}/#{audio.id}.flac", 'wb')
+        allow(File).to receive(:open)
+          .with("tmp/updates/#{audio.id}/#{audio.filename}.flac")
+        allow(File).to receive(:open)
+          .with("tmp/updates/#{audio.id}/#{audio.filename}.m4a")
+        allow(File).to receive(:open)
+          .with("tmp/updates/#{audio.id}/#{audio.filename}.mp3")
         allow(flac).to receive(:replace)
         allow(he_aac).to receive(:replace)
         allow(mp3_128).to receive(:replace)
       end
 
       it 'transcodes the file' do
-        expect(audio).to receive(:transcode_updates).with("tmp/updates/#{audio.id}/#{audio.id}.flac")
+        expect(audio).to receive(:transcode_updates)
+          .with("tmp/updates/#{audio.id}/#{audio.id}.flac")
 
         audio.update_metadata
       end
 
       it 'saves the audio' do
-        allow(audio).to receive(:transcode_updates).with("tmp/updates/#{audio.id}/#{audio.id}.flac")
+        allow(audio).to receive(:transcode_updates)
+          .with("tmp/updates/#{audio.id}/#{audio.id}.flac")
 
         expect(audio).to receive(:save)
 
@@ -54,7 +62,8 @@ RSpec.describe Audio, type: :model do
       end
 
       it "doesn't transcode the file" do
-        expect(audio).not_to receive(:transcode_updates).with("tmp/updates/#{audio.id}/#{audio.id}.flac")
+        expect(audio).not_to receive(:transcode_updates)
+          .with("tmp/updates/#{audio.id}/#{audio.id}.flac")
 
         audio.update_metadata
       end
@@ -69,15 +78,15 @@ RSpec.describe Audio, type: :model do
 
   describe '.by_filename' do
     it 'returns audios that matches with the filename' do
-      audio1 = create(:audio)
+      create(:audio)
       audio2 = create(:audio, filename: 'newFilename.mp3')
 
       expect(Audio.by_filename('newFilename.mp3')).to include audio2
     end
   end
 
-  describe ".search" do
-    it "returns a result if there is a match" do
+  describe '.search' do
+    it 'returns a result if there is a match' do
       audio = create(:audio, title: 'hello world')
       results = Audio.search('hello')
 
@@ -85,7 +94,7 @@ RSpec.describe Audio, type: :model do
       expect(results.first.id).to be(audio.id)
     end
 
-    it "returns an empty array if there is no match" do
+    it 'returns an empty array if there is no match' do
       expect(Audio.search('mojitos')).to be_empty
     end
   end

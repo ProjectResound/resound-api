@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AudioSearchEngine < ActiveRecord::Base
   extend Textacular
 
@@ -6,13 +8,24 @@ class AudioSearchEngine < ActiveRecord::Base
   self.primary_key = :searchable_id
 
   def self.search(query)
-    if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "mysql2"
+    if ActiveRecord::Base.connection.instance_values['config'][:adapter] ==
+       'mysql2'
       query.downcase!
-      AudioSearchEngine.where("lower(title) LIKE (?)", "%#{query}%").
-          or(Audio.where("lower(filename) LIKE (?)", "%#{query}%")).
-          or(Audio.where("lower(tags) LIKE (?)", "%#{query}%")).
-          or(Audio.where("lower(contributors) LIKE (?)", "%#{query}%")).
-          or(Audio.where("lower(uploader_nickname) LIKE (?)", "%#{query}%"))
+      AudioSearchEngine.where('lower(title) LIKE (?)', "%#{query}%")
+                       .or(
+                         Audio.where('lower(filename) LIKE (?)', "%#{query}%")
+                       )
+                       .or(
+                         Audio.where('lower(tags) LIKE (?)', "%#{query}%")
+                       )
+                       .or(
+                         Audio.where('lower(contributors) LIKE (?)',
+                                     "%#{query}%")
+                       )
+                       .or(
+                         Audio.where('lower(uploader_nickname) LIKE (?)',
+                                     "%#{query}%")
+                       )
     else
       super
     end

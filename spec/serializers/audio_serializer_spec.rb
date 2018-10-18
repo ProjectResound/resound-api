@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe AudioSerializer do
-  subject(:serializer)   { AudioSerializer.new(audio) }
+  subject(:serializer) { AudioSerializer.new(audio) }
 
   describe '#uploader' do
     let(:audio) { create(:audio) }
@@ -12,7 +14,7 @@ RSpec.describe AudioSerializer do
       end
     end
 
-    context "when uploader is deleted" do
+    context 'when uploader is deleted' do
       it "returns 'deleted user'" do
         uploader = audio.uploader
         uploader.destroy
@@ -40,7 +42,7 @@ RSpec.describe AudioSerializer do
       it 'returns a hash containing the url related to the file format' do
         allow(audio).to receive(:file).and_return file_hash
 
-        expect(serializer.files).to eq({mp3: "mp3-url", flac: "flac-url"})
+        expect(serializer.files).to eq(mp3: 'mp3-url', flac: 'flac-url')
       end
     end
   end

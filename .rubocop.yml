@@ -1,0 +1,37 @@
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - 'spec/**/*.rb'
+
+Style/MultilineBlockChain:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - '**/*.rb'
+
+Metrics/ClassLength:
+  Exclude:
+    - '**/*.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - '**/*.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - '**/*.rb'
+
+Style/Documentation:
+  Exclude:
+    - '**/*.rb'
+
+Style/ClassAndModuleChildren:
+  Exclude:
+    - 'app/controllers/api/**/*.rb'
+
+AllCops:
+  Exclude:
+    - 'db/**/*.rb'
+    - 'bin/**/*'

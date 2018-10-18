@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Audio < ApplicationRecord
   include FileUploader[:file]
   include ActiveModel::ForbiddenAttributesProtection
@@ -22,15 +24,21 @@ class Audio < ApplicationRecord
     FileUtils.mkpath(updates_file_directory)
     downloaded_file = updates_file_path(id, 'flac')
     if File.exist?(flac.url)
-      open(downloaded_file, 'wb') do |write_file|
-        write_file << open(flac.url).read
+      File.open(downloaded_file, 'wb') do |write_file|
+        write_file << File.open(flac.url).read
       end
 
       transcode_updates(downloaded_file)
 
-      file[:flac].replace(File.open(updates_file_path(File.basename(filename), 'flac')))
-      file[:he_aac].replace(File.open(updates_file_path(File.basename(filename), 'm4a')))
-      file[:mp3_128].replace(File.open(updates_file_path(File.basename(filename), 'mp3')))
+      file[:flac].replace(
+        File.open(updates_file_path(File.basename(filename), 'flac'))
+      )
+      file[:he_aac].replace(
+        File.open(updates_file_path(File.basename(filename), 'm4a'))
+      )
+      file[:mp3_128].replace(
+        File.open(updates_file_path(File.basename(filename), 'mp3'))
+      )
     end
     save
 
@@ -38,11 +46,12 @@ class Audio < ApplicationRecord
   end
 
   def self.search(query)
-    if ActiveRecord::Base.connection.instance_values["config"][:adapter] == "mysql2"
+    if ActiveRecord::Base.connection.instance_values['config'][:adapter] ==
+       'mysql2'
       query.downcase!
-      Audio.where("lower(title) LIKE (?)", "%#{query}%").
-          or(Audio.where("lower(filename) LIKE (?)", "%#{query}%")).
-          or(Audio.where("lower(tags) LIKE (?)", "%#{query}%"))
+      Audio.where('lower(title) LIKE (?)', "%#{query}%")
+           .or(Audio.where('lower(filename) LIKE (?)', "%#{query}%"))
+           .or(Audio.where('lower(tags) LIKE (?)', "%#{query}%"))
     else
       super
     end
@@ -52,21 +61,21 @@ class Audio < ApplicationRecord
 
   def transcode_updates(downloaded_file)
     transcoder = Transcoder.new(
-        file: downloaded_file,
-        title: title,
-        contributor: contributors
+      file: downloaded_file,
+      title: title,
+      contributor: contributors
     )
     transcoder.transcode(
-        output: updates_file_path(File.basename(filename), 'flac'),
-        format: Transcoder::FLAC
+      output: updates_file_path(File.basename(filename), 'flac'),
+      format: Transcoder::FLAC
     )
     transcoder.transcode(
-        output: updates_file_path(File.basename(filename), 'mp3'),
-        format: Transcoder::MP3_128
+      output: updates_file_path(File.basename(filename), 'mp3'),
+      format: Transcoder::MP3_128
     )
     transcoder.transcode(
-        output: updates_file_path(File.basename(filename), 'm4a'),
-        format: Transcoder::HE_AAC
+      output: updates_file_path(File.basename(filename), 'm4a'),
+      format: Transcoder::HE_AAC
     )
   end
 

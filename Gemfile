@@ -1,11 +1,12 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 
 ruby '~> 2.4.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails'
 gem 'active_model_serializers', '~> 0.10.0'
-
+gem 'rails'
 
 gem 'pg', '~> 0.19.0'
 # Uncomment the 'scenic' gem below if you're using postgresql
@@ -27,32 +28,34 @@ gem 'redis-rails'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
-# Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
+gem 'acts_as_paranoid',
+    git: 'https://github.com/shanebonham/acts_as_paranoid',
+    branch: 'master'
+gem 'jwt', '~> 1.5.6'
+gem 'kaminari', '~> 0.14.1'
 gem 'responders', '~> 2.3.0'
-gem 'sinatra', git: 'https://github.com/sinatra/sinatra', branch: 'master'
 gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
-gem 'textacular', '~> 4.0.1'
-gem 'jwt', '~> 1.5.6'
-gem 'acts_as_paranoid', git: 'https://github.com/shanebonham/acts_as_paranoid', branch: 'master'
-gem 'kaminari', '~> 0.14.1'
 gem 'shrine', '~> 2.11.0'
+gem 'sinatra', git: 'https://github.com/sinatra/sinatra', branch: 'master'
+gem 'textacular', '~> 4.0.1'
 
-# Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine wants Aws.
+# Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine
+# wants Aws.
 gem 'aws-sdk', '~> 2.1'
-gem 'streamio-ffmpeg', '~> 3.0'
 gem 'honeybadger', '~> 3.1'
-gem 'shrine-ftp'
 gem 'rb-readline'
+gem 'shrine-ftp'
+gem 'streamio-ffmpeg', '~> 3.0'
 
 group :development, :test do
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
-  gem 'rspec-rails', '~> 3.5'
-  gem "factory_bot_rails"
   gem 'dotenv-rails'
+  gem 'factory_bot_rails'
+  gem 'rspec-rails', '~> 3.5'
+  gem 'rubocop', '~> 0.59.2', require: false
 end
 
 group :test do
@@ -60,15 +63,14 @@ group :test do
   gem 'simplecov', require: false
 end
 
-
 group :development do
   gem 'listen', '~> 3.0.5'
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  # Spring speeds up development by keeping your application running in the
+  # background. Read more: https://github.com/rails/spring
+  gem 'rails-erd', '~> 1.5.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
-  gem 'rails-erd', '~> 1.5.2'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

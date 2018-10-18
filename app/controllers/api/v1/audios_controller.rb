@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
+# frozen_string_literal: true.
+
 # All API calls require authorization using an Authorization header from Auth0.
 module Api::V1
   class AudiosController < BaseController
     include Secured
 
-    before_action :find_audio, only: [:show, :update, :destroy]
+    before_action :find_audio, only: %i[show update destroy]
 
     PER_PAGE = 25
 
@@ -11,9 +15,11 @@ module Api::V1
     #
     # @param page [Integer] optional
     # @param filename [String] optional
-    # @param working_on [Boolean] If true, returns the three recent Audios uploaded by the user.
+    # @param working_on [Boolean] If true, returns the three recent Audios
+    # uploaded by the user.
     #
-    # @return [Object] paginated object including an audios attribute that contains an array of audio.
+    # @return [Object] paginated object including an audios attribute that
+    # contains an array of audio.
     # @example
     #  GET /api/v1/audios =>
     #   {
@@ -37,21 +43,23 @@ module Api::V1
     #   }
     def index
       page = params[:page] || 1
-      if params[:filename]
-        audio = Audio.by_filename(params[:filename]).page(1).per(1)
-      elsif params[:working_on] == 'true'
-        audio = Audio.where(uploader_id: @current_user.id).page(1).order('created_at DESC').per(3)
-      elsif params[:by_user]
-        audio = Audio.where(uploader_id: @current_user.id).order('created_at DESC').page(page).per(PER_PAGE)
-      else
-        audio = Audio.order('created_at DESC').page(page).per(PER_PAGE)
-      end
+      audio = if params[:filename]
+                Audio.by_filename(params[:filename]).page(1).per(1)
+              elsif params[:working_on] == 'true'
+                Audio.where(uploader_id: @current_user.id).page(1)
+                     .order('created_at DESC').per(3)
+              elsif params[:by_user]
+                Audio.where(uploader_id: @current_user.id)
+                     .order('created_at DESC').page(page).per(PER_PAGE)
+              else
+                Audio.order('created_at DESC').page(page).per(PER_PAGE)
+              end
       render json: {
-          audios: audio,
-          currentPage: audio.current_page,
-          totalPages: audio.total_pages,
-          totalCount: audio.total_count,
-          perPage: audio.limit_value
+        audios: audio,
+        currentPage: audio.current_page,
+        totalPages: audio.total_pages,
+        totalCount: audio.total_count,
+        perPage: audio.limit_value
       }
     end
 
@@ -84,7 +92,8 @@ module Api::V1
       end
     end
 
-    # Creates an Audio object. From Resound-Store, this method can accept a flow.js (https://github.com/flowjs/flow.js)
+    # Creates an Audio object. From Resound-Store, this method can accept a
+    # flow.js (https://github.com/flowjs/flow.js)
     # type partial upload.
     #
     # @param title [String] audio file's title
@@ -105,27 +114,27 @@ module Api::V1
         audio.uploader = @current_user
         audio.save!
 
-        # Note(lyang): When replacing an existing file with a differently named file,
-        # we need to update the :filename primary key.
-        if params[:originalFilename] && (params[:originalFilename] != params[:flowFilename])
+        # Note(lyang): When replacing an existing file with a differently
+        # named file, we need to update the :filename primary key.
+        if params[:originalFilename] &&
+           (params[:originalFilename] != params[:flowFilename])
           audio.update_columns(filename: params[:flowFilename])
         end
 
         AudioProcessing.perform_later(
-            { identifier: params[:flowIdentifier],
-              filename: params[:flowFilename],
-              title: params[:title],
-              contributors: contributors }
+          identifier: params[:flowIdentifier],
+          filename: params[:flowFilename],
+          title: params[:title],
+          contributors: contributors
         )
-      else
-        #   TBD: Upload by skipping flow.js, should we expect form data?
       end
-      DeleteOldFiles.perform_later()
+      DeleteOldFiles.perform_later
       render status: :ok
     end
 
     # Updates the audio object. Requires a HTTP PUT request.
-    # @param id [Integer] Audio ID, passed in as the resource ID in the endpoint.
+    # @param id [Integer] Audio ID, passed in as the resource ID in the
+    # endpoint.
     # @param body [JSON] json object
     # @example body JSON
     #   {
@@ -139,7 +148,8 @@ module Api::V1
         payload = JSON.parse(request.body.read)
         @audio.title = payload['title'] if payload['title']
         if payload['contributors']
-          @audio.contributors = Contributor.parse_and_process(payload['contributors'])
+          @audio.contributors =
+            Contributor.parse_and_process(payload['contributors'])
         end
         @audio.tags = payload['tags'] if payload['tags']
         @audio.save!
@@ -179,16 +189,18 @@ module Api::V1
     def search
       results = AudioSearchEngine.search(params[:q])
       render json: {
-          audios: results,
-          currentPage: 1,
-          totalPages: 1,
-          totalCount: results.size,
-          perPage: 100
+        audios: results,
+        currentPage: 1,
+        totalPages: 1,
+        totalCount: results.size,
+        perPage: 100
       }
     end
 
-    # DANGER, Will Robinson! Destroys the audio object including all the different transcoded versions. This will make any
-    # links to the different audio formats broken. Requires an HTTP DELETE request.
+    # DANGER, Will Robinson! Destroys the audio object including all the
+    # different transcoded versions. This will make any
+    # links to the different audio formats broken. Requires an HTTP DELETE
+    # request.
     #
     # @param id [Integer] Audio id
     # @return [HTTPStatus] :ok or :not_found
@@ -214,24 +226,28 @@ module Api::V1
       # Ensure required paths exist
       FileUtils.mkpath chunk_file_directory
       # Move the temporary file upload to the temporary chunk file path
-      FileUtils.mv params['file'].tempfile, chunk_file_path(params[:flowFilename], params[:flowChunkNumber]), force: true
+      FileUtils.mv params['file'].tempfile,
+                   chunk_file_path(
+                     params[:flowFilename], params[:flowChunkNumber]
+                   ),
+                   force: true
     end
 
     def last_chunk?
-      for i in 1..params[:flowTotalChunks].to_i
-        if !File.exists?(chunk_file_path(params[:flowFilename], i))
+      (1..params[:flowTotalChunks].to_i).each do |i|
+        unless File.exist?(chunk_file_path(params[:flowFilename], i))
           return false
         end
       end
-      return true
+      true
     end
 
-    def chunk_file_path(fileName, number)
-      File.join(chunk_file_directory, "#{fileName}.part#{number}")
+    def chunk_file_path(filename, number)
+      File.join(chunk_file_directory, "#{filename}.part#{number}")
     end
 
     def chunk_file_directory
-      File.join "tmp", "flow", params[:flowIdentifier]
+      File.join 'tmp', 'flow', params[:flowIdentifier]
     end
   end
 end

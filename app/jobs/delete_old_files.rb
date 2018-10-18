@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeleteOldFiles < ActiveJob::Base
   include Resque::Plugins::UniqueJob
 
