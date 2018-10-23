@@ -1,8 +1,7 @@
 # Resound API [![CircleCI](https://circleci.com/gh/ProjectResound/resound-api.svg?style=svg)](https://circleci.com/gh/ProjectResound/resound-api)
 The backend that all of Resound's apps hook into. More info about the suite of apps [in the wiki](https://github.com/ProjectResound/planning/wiki)
 
-## IMPORTANT NOTE!!
-This is not a working branch. It's one example of how multi-tenancy would work using the [apartment gem](https://github.com/influitive/apartment).
+## Multi-tenancy
 
 Multi-tenancy would be handled on the API side (this repo).  Each group or station would be a separate tenant. For example, `kpcc` and `npr`.
 
@@ -13,6 +12,14 @@ Then you can run the following rake task, that will create the tenants based on 
 ```
 rake db:create_tenants
 ```
+The tenants will be based on the first subdomain from the urls defined on `ALLOWED_CORS_URLS`.
+For example `http://kpcc.resound.npr.org`, will generate a tenant named `kpcc`.
+
+Also, if you want, you can setup a S3 bucket for each tenant.
+All you need to do, is set the env variable `S3_MULTI_TENANT` to true, and create a S3 bucket following the
+name convention `TENANT_NAME-resound-store`.
+Example of bucket name: `kpcc-resound-store`.
+All the buckets need to be defined under the same AWS account, and region.
 
 ## Getting Started
 These instructions will get you a copy of the latest docker image and run the image
