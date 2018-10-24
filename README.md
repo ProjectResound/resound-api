@@ -51,6 +51,16 @@ Resound is also designed to work with a MySQL database, although it loses some o
 To run Resound API with the MySQL adapter, edit `database.yml` appropriately. Also comment
 out the Scenic gem `gem 'scenic', '~> 1.4.0'` from the Gemfile befure running `bundle install`
 
+## Heroku
+1. Need to add ffmpeg build pack, suggested buildpack: https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest
+2. Add addons for Postgres and Redis
+3. Copy all the variables from `.env.example` to `Config Vars` under `settings` tab and add the proper values
+4. Need to set `JOB_SYNC` to `true`
+5. If you used the suggested ffmpeg build pack, you need to set `FFMPEG_PATH` to `/app/vendor/ffmpeg/ffmpeg`. If you want you can check the correct path using the follow setps
+ * run `heroku bash -a your-app-name`
+ * run `which ffmpeg`
+ * the output of the previous command is the value you should add under `FFMPEG_PATH`
+
 ## Upload via FTP
 It is possible to configure `resound-api` to upload via FTP:
 1. Copy `shrine_ftp_.rb.example` to `shrine.rb` in the `config/initializers` directory
