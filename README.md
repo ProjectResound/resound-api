@@ -15,14 +15,13 @@ This rails app uses the [dotenv gem](https://github.com/bkeepers/dotenv). See `.
 
 These steps will run the server for development:
 1. Install Ruby
-2. Install bundler
-3. Install and run database
-4. Create an .env file from .env.example
-5. Create a secrets.yml from secrets.yml.example
-6. `bundle exec rake db:create RAILS_ENV=test`
-7. `bundle exec rake db:schema:load RAILS_ENV=test`
-8. `bundle install`
-9. `rails s`
+1. Install bundler
+1. Install and run database
+1. Create an .env file from .env.example
+1. Create a secrets.yml from secrets.yml.example
+1. `rake db:test:prepare`
+1. `bundle install`
+1. `rails s`
 
 ## Postgres setup
 Resound API works with Postgres out of the box.
