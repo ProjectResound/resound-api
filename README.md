@@ -2,6 +2,7 @@
 The backend that all of Resound's apps hook into. More info about the suite of apps [in the wiki](https://github.com/ProjectResound/planning/wiki)
 
 ## Multi-tenancy
+If you are running one instance of `resound-api` for multiple organizations, one way to do it is with Multi-teinancy
 
 Multi-tenancy would be handled on the API side (this repo).  Each group or station would be a separate tenant. For example, `kpcc` and `npr`.
 
