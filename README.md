@@ -17,9 +17,10 @@ The tenants will be based on the first subdomain from the urls defined on `ALLOW
 For example `http://kpcc.resound.npr.org`, will generate a tenant named `kpcc`.
 
 Also, if you want, you can setup a S3 bucket for each tenant.
-All you need to do, is set the env variable `S3_MULTI_TENANT` to true, and create a S3 bucket following the
-name convention `TENANT_NAME-resound-store`.
-Example of bucket name: `kpcc-resound-store`.
+All you need to do, is set the env variable `S3_MULTI_TENANT` to true, and set the `AWS_BUCKET_SUFFIX` variable.
+The variable `AWS_BUCKET_SUFFIX` will represent the common suffix between the bucket names.
+If you set it to `resound-audio`, then all your buckets will need to follow the pattern: `TENANT_NAME-resound-audio`.
+Example: `kpcc-resound-audio`.
 All the buckets need to be defined under the same AWS account, and region.
 
 ## Getting Started
