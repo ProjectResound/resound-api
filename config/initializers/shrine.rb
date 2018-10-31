@@ -29,10 +29,10 @@ if Rails.env.production? || ENV['UPLOAD_TO_S3']
   if ENV['S3_MULTI_TENANCY']
     bucket_suffix = ENV['AWS_BUCKET_SUFFIX']
 
-    Shrine.plugin :default_storage, store: lambda do |_record, _name|
+    Shrine.plugin :default_storage, store: lambda { |_record, _name|
       tenant_name = Apartment::Tenant.current
       :"store_#{tenant_name}"
-    end
+    }
 
     Shrine.storage(/store_(\w+)/) do |match|
       bucket_name = "#{match[1]}-#{bucket_suffix}"
