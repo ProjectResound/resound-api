@@ -62,11 +62,11 @@ describe Api::V1::AudiosController do
                                              title: 'lalad',
                                              contributors: 'ben stein' }
         end.to have_enqueued_job(AudioProcessing).with(
-          identifier: "123-lalala1",
-          filename: "lalala.wav",
-          title: "lalad",
-          contributors: "ben stein",
-          tenant: "public"
+          identifier: '123-lalala1',
+          filename: 'lalala.wav',
+          title: 'lalad',
+          contributors: 'ben stein',
+          tenant: 'public'
         )
 
         audio = Audio.by_filename(filename).first
