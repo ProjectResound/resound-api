@@ -53,7 +53,7 @@ describe Api::V1::AudiosController do
 
       filename = 'lalala.wav'
 
-      it 'enqueues a job and creates a new audio object' do
+      it 'enqueues a job with correct params and creates a new audio object' do
         expect do
           post AUDIO_API_ENDPOINT, params: { file: file,
                                              flowTotalChunks: 2,
@@ -61,7 +61,13 @@ describe Api::V1::AudiosController do
                                              flowFilename: filename,
                                              title: 'lalad',
                                              contributors: 'ben stein' }
-        end.to have_enqueued_job(AudioProcessing)
+        end.to have_enqueued_job(AudioProcessing).with(
+          identifier: "123-lalala1",
+          filename: "lalala.wav",
+          title: "lalad",
+          contributors: "ben stein",
+          tenant: "public"
+        )
 
         audio = Audio.by_filename(filename).first
 
