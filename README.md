@@ -61,7 +61,7 @@ out the Scenic gem `gem 'scenic', '~> 1.4.0'` from the Gemfile befure running `b
  * run `heroku bash -a your-app-name`
  * run `which ffmpeg`
  * the output of the previous command is the value you should add under `FFMPEG_PATH`
-
+6. Need to set the env variable `AAC_CODEC` to `aac`
 
 ## SSL
 If you want to force all the requests between the client and the API to be `HTTPS`, you just need to set this env var `FORCE_SSL` to `true`.

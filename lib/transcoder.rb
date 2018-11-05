@@ -27,7 +27,9 @@ class Transcoder
     encoding_options = {}
     case format
     when HE_AAC
-      encoding_options[:audio_codec] = 'libfdk_aac'
+      audio_codec = ENV['AAC_CODEC'] || 'libfdk_aac'
+
+      encoding_options[:audio_codec] = audio_codec
       encoding_options[:audio_bitrate] = '48'
     when MP3_128
       encoding_options.merge!(
