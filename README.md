@@ -62,6 +62,10 @@ out the Scenic gem `gem 'scenic', '~> 1.4.0'` from the Gemfile befure running `b
  * run `which ffmpeg`
  * the output of the previous command is the value you should add under `FFMPEG_PATH`
 
+
+## SSL
+If you want to force all the requests between the client and the API to be `HTTPS`, you just need to set this env var `FORCE_SSL` to `true`.
+
 ## Upload via FTP
 It is possible to configure `resound-api` to upload via FTP:
 1. Copy `shrine_ftp_.rb.example` to `shrine.rb` in the `config/initializers` directory
