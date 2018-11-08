@@ -36,8 +36,11 @@ Apartment.configure do |config|
   # config.tenant_names = lambda{ Customer.pluck(:tenant_name) }
   config.tenant_names = ENV['ALLOWED_CORS_URLS'].split(',').map do |url|
     uri = URI.parse(url)
-    uri.host.remove('www').split('.').first
-  end
+    name = uri.host.remove('www').split('.').first
+    unless name == 'localhost'
+      return name
+    end
+  end.reject{ |t| t.nil? }
   # config.tenant_names = {
   #   'tenant1' => {
   #     adapter: 'postgresql',
