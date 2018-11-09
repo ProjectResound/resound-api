@@ -37,7 +37,8 @@ Apartment.configure do |config|
   tenant_name = ENV['ALLOWED_CORS_URLS'].split(',').map do |url|
     uri = URI.parse(url)
     name = uri.host.remove('www').split('.').first
-    return name unless name == 'localhost'
+
+    name if %w[localhost lvh].exclude?(name)
   end
   config.tenant_names = tenant_name.reject(&:nil?)
   # config.tenant_names = {
