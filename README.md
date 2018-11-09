@@ -9,7 +9,7 @@ Multi-tenancy would be handled on the API side (this repo).  Each group or stati
 To create the tenants, first you need to set the env variable `ALLOWED_CORS_URLS`.
 Example: `ALLOWED_CORS_URLS=http://kpcc.resound.npr.org,http://why.resound.npr.org`
 
-**note:** 'localhost' cannot be used as a tenant name. 
+**note:** 'localhost' and 'lvh' cannot be used as a tenant name.
 
 Then you can run the following rake task, that will create the tenants based on the urls
 ```
@@ -37,13 +37,16 @@ This rails app uses the [dotenv gem](https://github.com/bkeepers/dotenv). See `.
 
 These steps will run the server for development:
 1. Install Ruby
-1. Install bundler
-1. Install and run database
-1. Create an .env file from .env.example
-1. Create a secrets.yml from secrets.yml.example
-1. `rake db:test:prepare`
-1. `bundle install`
-1. `rails s`
+2. Install bundler
+3. Install and run database
+4. Create an .env file from .env.example
+5. Create a secrets.yml from secrets.yml.example
+6. `rake db:test:prepare`
+7. `bundle install`
+8. `rails s`
+
+If you want to run multi tenancy locally you can setup you `hosts` file.
+For example, if you want to have a tenant working locally for `http://kpcc.resound.npr.org` you just need to add `127.0.0.1 kpcc.resound.npr` to your `hosts` file.
 
 ## Postgres setup
 Resound API works with Postgres out of the box.
