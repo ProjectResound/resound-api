@@ -34,10 +34,12 @@ Apartment.configure do |config|
   # (must contain all key/values required in database.yml)
   #
   # config.tenant_names = lambda{ Customer.pluck(:tenant_name) }
-  config.tenant_names = ENV['ALLOWED_CORS_URLS'].split(',').map do |url|
+  tenant_name = ENV['ALLOWED_CORS_URLS'].split(',').map do |url|
     uri = URI.parse(url)
-    uri.host.remove('www').split('.').first
+    name = uri.host.remove('www').split('.').first
+    return name unless name == 'localhost'
   end
+  config.tenant_names = tenant_name.reject(&:nil?)
   # config.tenant_names = {
   #   'tenant1' => {
   #     adapter: 'postgresql',

@@ -9,6 +9,8 @@ Multi-tenancy would be handled on the API side (this repo).  Each group or stati
 To create the tenants, first you need to set the env variable `ALLOWED_CORS_URLS`.
 Example: `ALLOWED_CORS_URLS=http://kpcc.resound.npr.org,http://why.resound.npr.org`
 
+**note:** 'localhost' cannot be used as a tenant name. 
+
 Then you can run the following rake task, that will create the tenants based on the urls
 ```
 rake db:create_tenants
