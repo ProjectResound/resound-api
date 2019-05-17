@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170722203820) do
+ActiveRecord::Schema.define(version: 20190522203943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20170722203820) do
     t.datetime "updated_at",   null: false
     t.string   "tags"
     t.string   "contributors"
+    t.string   "peaks"
     t.index "to_tsvector('english'::regconfig, (title)::text)", name: "index_audios_on_title", using: :gin
     t.index ["filename"], name: "index_audios_on_filename", unique: true, using: :btree
   end

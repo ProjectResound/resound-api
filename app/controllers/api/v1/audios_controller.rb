@@ -8,6 +8,7 @@ module Api::V1
     include Secured
 
     before_action :find_audio, only: %i[show update destroy]
+    skip_before_action :authenticate_request!, only: [:show]
 
     PER_PAGE = 25
 
@@ -147,12 +148,14 @@ module Api::V1
     def update
       if @audio && request.body
         payload = JSON.parse(request.body.read)
-        @audio.title = payload['title'] if payload['title']
+        attributes = %w[title tags peaks]
+        attributes.each do |attribute|
+          @audio.send("#{attribute}=", payload[attribute]) if payload[attribute]
+        end
         if payload['contributors']
           @audio.contributors =
             Contributor.parse_and_process(payload['contributors'])
         end
-        @audio.tags = payload['tags'] if payload['tags']
         @audio.save!
         AudioUpdating.perform_later(@audio.id)
         render json: @audio
