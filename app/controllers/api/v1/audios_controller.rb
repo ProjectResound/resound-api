@@ -8,6 +8,7 @@ module Api::V1
     include Secured
 
     before_action :find_audio, only: %i[show update destroy]
+    skip_before_action :authenticate_request!, only: [:show]
 
     PER_PAGE = 25
 
