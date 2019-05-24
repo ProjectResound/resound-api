@@ -10,7 +10,8 @@ class AudioSerializer < ActiveModel::Serializer
              :tags,
              :contributors,
              :uploader,
-             :files
+             :files,
+             :peaks
 
   def uploader
     user = User.find_by_uid(object.uploader_id)

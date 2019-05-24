@@ -154,6 +154,7 @@ module Api::V1
             Contributor.parse_and_process(payload['contributors'])
         end
         @audio.tags = payload['tags'] if payload['tags']
+        @audio.peaks = payload['peaks'] if payload['peaks']
         @audio.save!
         AudioUpdating.perform_later(@audio.id)
         render json: @audio
