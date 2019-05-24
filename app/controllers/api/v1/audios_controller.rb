@@ -148,7 +148,7 @@ module Api::V1
     def update
       if @audio && request.body
         payload = JSON.parse(request.body.read)
-        attributes = ['title', 'tags', 'peaks']
+        attributes = %w[title tags peaks]
         attributes.each do |attribute|
           @audio.send("#{attribute}=", payload[attribute]) if payload[attribute]
         end
