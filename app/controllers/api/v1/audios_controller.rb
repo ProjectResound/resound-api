@@ -148,13 +148,14 @@ module Api::V1
     def update
       if @audio && request.body
         payload = JSON.parse(request.body.read)
-        @audio.title = payload['title'] if payload['title']
+        attributes = ['title', 'tags', 'peaks']
+        attributes.each do |attribute|
+          @audio.send("#{attribute}=", payload[attribute]) if payload[attribute]
+        end
         if payload['contributors']
           @audio.contributors =
             Contributor.parse_and_process(payload['contributors'])
         end
-        @audio.tags = payload['tags'] if payload['tags']
-        @audio.peaks = payload['peaks'] if payload['peaks']
         @audio.save!
         AudioUpdating.perform_later(@audio.id)
         render json: @audio
