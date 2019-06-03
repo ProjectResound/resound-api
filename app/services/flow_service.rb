@@ -24,7 +24,6 @@ class FlowService
       contributor: @contributor
     )
     duration = transcoder.duration
-
     file_extension = File.extname(@filename).downcase
 
     if file_extension == '.wav'
