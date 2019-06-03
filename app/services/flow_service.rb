@@ -24,8 +24,9 @@ class FlowService
       contributor: @contributor
     )
     duration = transcoder.duration
+    file_extension = File.extname(@filename).downcase
 
-    if File.extname(@filename) == '.wav'
+    if file_extension == '.wav'
       transcoder.transcode(
         output: final_flac_path,
         format: Transcoder::FLAC
