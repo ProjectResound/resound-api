@@ -34,7 +34,7 @@ gem 'acts_as_paranoid',
     git: 'https://github.com/shanebonham/acts_as_paranoid',
     branch: 'master'
 gem 'jwt', '~> 1.5.6'
-gem 'kaminari', '~> 0.14.1'
+gem 'kaminari', '~> 1.2.1'
 gem 'responders', '~> 2.3.0'
 gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
