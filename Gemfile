@@ -38,7 +38,7 @@ gem 'kaminari', '~> 0.14.1'
 gem 'responders', '~> 2.3.0'
 gem 'resque', '~> 1.27.0'
 gem 'resque_solo', '~> 0.3.0'
-gem 'shrine', '~> 2.12.0'
+gem 'shrine', '~> 3.3.0'
 gem 'textacular', '~> 4.0.1'
 
 # Use ~> 2.0 because after 2.0, the constant is named AWS, not Aws. Shrine
